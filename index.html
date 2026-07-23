@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+  MindForge
+  Created by Kevin — https://mtrxdigital.com
+  © MTRX Digital
+-->
 <html lang="en">
 <head>
 <!-- skill:chrome -->
@@ -51,7 +56,7 @@
         var credit = document.createElement('div');
         credit.className = 'design-ui-credit';
         credit.setAttribute('aria-hidden', 'true');
-        credit.innerHTML = '\u{1F49C} by <a href="https://mtrxdigital.com" target="_blank" rel="noopener noreferrer">Kevin</a>';
+        credit.innerHTML = '\u{1F49C} by Kevin';
         document.body.appendChild(credit);
 
         var timer = null;
@@ -82,6 +87,8 @@
 <!-- /skill:chrome -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="author" content="Kevin — mtrxdigital.com">
+<meta name="description" content="MindForge — daily quotes, essays, and power laws for mental strength. Built by Kevin at mtrxdigital.com.">
 <title>MindForge</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=DM+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Bitter:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
@@ -104,7 +111,6 @@
 html{scroll-behavior:smooth;}
 body{font-family:var(--body-font);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;overflow-x:hidden;transition:background 0.5s,color 0.4s;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;}
 
-/* ===== HERO ===== */
 .hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px 24px 120px;position:relative;text-align:center;}
 .hero-date{font-size:clamp(0.72rem,3vw,0.85rem);letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--ink-light);margin-bottom:clamp(28px,6vh,52px);}
 .hero-quote{font-family:var(--heading-font);font-size:clamp(2rem,8vw,3.4rem);line-height:1.25;font-style:italic;max-width:18ch;margin:0 auto clamp(24px,4vh,32px);color:var(--ink);transition:opacity 0.4s;}
@@ -115,26 +121,16 @@ body{font-family:var(--body-font);background:var(--bg);color:var(--ink);min-heig
 .hero-refresh{margin-top:clamp(28px,5vh,44px);width:52px;height:52px;border-radius:50%;border:1.5px solid var(--border);background:transparent;color:var(--ink-light);cursor:pointer;font-size:1.4rem;display:flex;align-items:center;justify-content:center;transition:all 0.3s cubic-bezier(0.25,1,0.5,1);}
 .hero-refresh:hover,.hero-refresh:active{border-color:var(--accent);color:var(--accent);transform:rotate(180deg);}
 
-.scroll-hint{position:absolute;bottom:clamp(84px,12vh,100px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink-light);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;animation:hintPulse 2.5s ease-in-out infinite;}
+.scroll-hint{position:absolute;bottom:clamp(70px,10vh,90px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink-light);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;animation:hintPulse 2.5s ease-in-out infinite;}
 .scroll-arrow{width:16px;height:16px;border-right:1.5px solid var(--ink-light);border-bottom:1.5px solid var(--ink-light);transform:rotate(45deg);margin-top:-4px;}
 @keyframes hintPulse{0%,100%{opacity:0.4;}50%{opacity:0.85;}}
 
-/* ===== BYLINE ===== */
-.byline{position:absolute;bottom:clamp(90px,13vh,110px);left:0;right:0;text-a11:09 PM 7/23/2026lign:center;font-size:0.72rem;color:var(--ink-light);letter-spacing:0.04em;}
-.byline a{color:var(--accent);text-decoration:none;font-weight:600;border-bottom:1px solid transparent;transition:border-color 0.2s;}
-.byline a:hover{border-bottom-color:var(--accent);}
-.section-byline{text-align:center;padding:28px 0 8px;font-size:0.72rem;color:var(--ink-light);letter-spacing:0.04em;}
-.section-byline a{color:var(--accent);text-decoration:none;font-weight:600;}
-.section-byline a:hover{text-decoration:underline;}
-
-/* ===== BOTTOM NAV ===== */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-sub);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 0 max(10px,env(safe-area-inset-bottom));z-index:50;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
 .bnav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 14px;border:none;background:none;color:var(--ink-light);cursor:pointer;font-family:var(--body-font);font-size:0.62rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;transition:color 0.2s;-webkit-tap-highlight-color:transparent;}
 .bnav-btn .bnav-icon{font-size:1.35rem;line-height:1;}
 .bnav-btn.active{color:var(--accent);}
 .bnav-btn:hover{color:var(--ink);}
 
-/* ===== SECTIONS ===== */
 .section{display:none;padding:0 clamp(18px,5vw,32px) calc(100px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto;}
 .section.active{display:block;}
 .section-top{padding-top:28px;padding-bottom:18px;position:sticky;top:0;background:var(--bg);z-index:10;}
@@ -215,9 +211,23 @@ body{font-family:var(--body-font);background:var(--bg);color:var(--ink);min-heig
 .sopt-name{font-size:0.8rem;font-weight:600;}
 .sopt-preview{font-size:0.64rem;color:var(--ink-light);margin-top:3px;}
 .mood-dot{width:18px;height:18px;border-radius:50%;margin:0 auto 5px;border:1px solid var(--border);}
-.settings-foot{text-align:center;padding-top:8px;font-size:0.74rem;color:var(--ink-light);}
+.settings-foot{text-align:center;padding-top:8px;font-size:0.72rem;color:var(--ink-light);}
 .settings-foot a{color:var(--accent);text-decoration:none;font-weight:600;}
 .settings-foot a:hover{text-decoration:underline;}
+
+.notif-row{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;}
+.notif-info{flex:1;}
+.notif-info .notif-title{font-size:0.9rem;font-weight:600;margin-bottom:2px;}
+.notif-info .notif-desc{font-size:0.74rem;color:var(--ink-light);line-height:1.4;}
+.toggle{width:48px;height:28px;border-radius:14px;background:var(--border);border:none;cursor:pointer;position:relative;flex-shrink:0;transition:background 0.25s;-webkit-tap-highlight-color:transparent;}
+.toggle.on{background:var(--accent);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:oklch(99% 0 0);transition:transform 0.25s cubic-bezier(0.25,1,0.5,1);}
+.toggle.on::after{transform:translateX(20px);}
+.notif-status{font-size:0.72rem;color:var(--ink-light);margin-top:8px;padding:0 2px;line-height:1.4;}
+.notif-status.err{color:oklch(65% 0.16 25);}
+.notif-status.ok{color:var(--accent);}
+.notif-test{margin-top:10px;width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--ink-mid);font-family:var(--body-font);font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;-webkit-tap-highlight-color:transparent;}
+.notif-test:hover{border-color:var(--accent);color:var(--accent);}
 
 @media(min-width:640px){.qgrid{grid-template-columns:1fr 1fr;}.lc-when{grid-template-columns:1fr 1fr;}}
 @media(min-width:768px){
@@ -251,7 +261,6 @@ body{font-family:var(--body-font);background:var(--bg);color:var(--ink);min-heig
   <div class="filter-row" id="filter-chips"></div>
   <div class="qcount" id="qcount"></div>
   <div class="qgrid" id="qgrid"></div>
-  <div class="section-byline">Made by <a href="https://mtrxdigital.com" target="_blank" rel="noopener">Kevin</a></div>
 </div>
 
 <div class="section" id="sec-essays">
@@ -262,7 +271,6 @@ body{font-family:var(--body-font);background:var(--bg);color:var(--ink);min-heig
   </div>
   <div class="unlock-bar"><div class="unlock-text" id="eu-text"></div><div class="unlock-next" id="eu-next"></div></div>
   <div id="essays-box"></div>
-  <div class="section-byline">Made by <a href="https://mtrxdigital.com" target="_blank" rel="noopener">Kevin</a></div>
 </div>
 
 <div class="section" id="sec-laws">
@@ -272,7 +280,6 @@ body{font-family:var(--body-font);background:var(--bg);color:var(--ink);min-heig
     <div class="section-sub">When to use, when to avoid</div>
   </div>
   <div id="laws-box"></div>
-  <div class="section-byline">Made by <a href="https://mtrxdigital.com" target="_blank" rel="noopener">Kevin</a></div>
 </div>
 
 <nav class="bottom-nav" id="bottom-nav">
@@ -287,11 +294,23 @@ body{font-family:var(--body-font);background:var(--bg);color:var(--ink);min-heig
   <div class="settings-panel">
     <div class="settings-handle"></div>
     <div class="settings-title">Settings</div>
+    <div class="settings-section">
+      <div class="settings-label">Daily Notification</div>
+      <div class="notif-row">
+        <div class="notif-info">
+          <div class="notif-title">Daily quote reminder</div>
+          <div class="notif-desc">Get a quote notification once a day</div>
+        </div>
+        <button class="toggle" id="notif-toggle" aria-label="Toggle notifications"></button>
+      </div>
+      <div class="notif-status" id="notif-status"></div>
+      <button class="notif-test" id="notif-test">Send a test notification</button>
+    </div>
     <div class="settings-section"><div class="settings-label">Mood</div><div class="sgrid" id="sg-mood"></div></div>
     <div class="settings-section"><div class="settings-label">Body Font</div><div class="sgrid wide" id="sg-body"></div></div>
     <div class="settings-section"><div class="settings-label">Quote Font</div><div class="sgrid wide" id="sg-head"></div></div>
     <div class="settings-section"><div class="settings-label">Text Size</div><div class="sgrid" id="sg-size"></div></div>
-    <div class="settings-foot">Made by <a href="https://mtrxdigital.com" target="_blank" rel="noopener">Kevin</a></div>
+    <div class="settings-foot">MindForge · Created by <a href="https://mtrxdigital.com" target="_blank" rel="noopener">Kevin</a></div>
   </div>
 </div>
 
@@ -456,6 +475,7 @@ var activeThemes={};
 var S={};
 try{S=JSON.parse(SAFE.get('mf3')||'{}');}catch(e){S={};}
 if(!S.mood)S.mood='dark';if(!S.bf)S.bf='grotesk';if(!S.hf)S.hf='instrument';if(!S.sz)S.sz='md';
+if(!S.notify)S.notify=false;
 function saveS(){SAFE.set('mf3',JSON.stringify(S));}
 
 function applyTheme(){
@@ -470,6 +490,8 @@ function applyTheme(){
 
 function fmtDate(){return new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});}
 function dayOfYear(){var n=new Date(),s=new Date(n.getFullYear(),0,0);return Math.floor((n-s)/864e5);}
+function todayKey(){var n=new Date();return n.getFullYear()+'-'+n.getMonth()+'-'+n.getDate();}
+function todaysQuote(){return Q[dayOfYear()%Q.length];}
 
 function setHeroQuote(rand){
   var i=rand?Math.floor(Math.random()*Q.length):dayOfYear()%Q.length;
@@ -478,6 +500,73 @@ function setHeroQuote(rand){
   document.getElementById('hero-author').textContent=q.a;
   document.getElementById('hero-source').textContent=q.s||'';
   document.getElementById('hero-tags').innerHTML=q.t.map(function(t){return '<span class="hero-tag">'+(TH[t]||t)+'</span>';}).join('');
+}
+
+var notifTimer=null;
+function notifSupported(){return ('Notification' in window);}
+function showQuoteNotification(){
+  if(!notifSupported()||Notification.permission!=='granted')return false;
+  var q=todaysQuote();
+  try{
+    var n=new Notification('MindForge · Today',{body:'"'+q.q+'"\n— '+q.a,tag:'mindforge-daily',renotify:false});
+    n.onclick=function(){window.focus();n.close();};
+    return true;
+  }catch(e){return false;}
+}
+function maybeFireDaily(){
+  if(!S.notify||!notifSupported()||Notification.permission!=='granted')return;
+  if(SAFE.get('mf_lastNotify')!==todayKey()){
+    if(showQuoteNotification())SAFE.set('mf_lastNotify',todayKey());
+  }
+  scheduleNextCheck();
+}
+function scheduleNextCheck(){
+  if(notifTimer)clearTimeout(notifTimer);
+  notifTimer=setTimeout(function(){maybeFireDaily();},60*60*1000);
+}
+function updateNotifUI(){
+  var toggle=document.getElementById('notif-toggle');
+  var status=document.getElementById('notif-status');
+  var test=document.getElementById('notif-test');
+  if(!notifSupported()){
+    toggle.classList.remove('on');
+    toggle.style.opacity='0.4';toggle.style.pointerEvents='none';
+    status.className='notif-status err';
+    status.textContent='This browser does not support notifications.';
+    test.style.display='none';
+    return;
+  }
+  var on=S.notify&&Notification.permission==='granted';
+  toggle.classList.toggle('on',on);
+  test.style.display=on?'block':'none';
+  if(Notification.permission==='denied'){
+    status.className='notif-status err';
+    status.textContent='Notifications are blocked in your browser settings. Enable them for this site to turn this on.';
+  }else if(on){
+    status.className='notif-status ok';
+    status.textContent='On. You will get one quote notification a day while the app is open in a tab. Keep it pinned or open for reliable delivery.';
+  }else{
+    status.className='notif-status';
+    status.textContent='Tap to allow notifications. Works best when the app stays open or pinned in a tab.';
+  }
+}
+function toggleNotif(){
+  if(!notifSupported())return;
+  if(S.notify){
+    S.notify=false;saveS();updateNotifUI();
+    if(notifTimer)clearTimeout(notifTimer);
+    return;
+  }
+  if(Notification.permission==='granted'){
+    S.notify=true;saveS();updateNotifUI();maybeFireDaily();
+  }else if(Notification.permission!=='denied'){
+    Notification.requestPermission().then(function(p){
+      if(p==='granted'){S.notify=true;saveS();showQuoteNotification();SAFE.set('mf_lastNotify',todayKey());scheduleNextCheck();}
+      updateNotifUI();
+    });
+  }else{
+    updateNotifUI();
+  }
 }
 
 function showHero(){
@@ -572,7 +661,12 @@ function init(){
   document.getElementById('hero-date').textContent=fmtDate();
   setHeroQuote(false);
   document.getElementById('hero-refresh').addEventListener('click',function(){setHeroQuote(true);});
-  renderChips();renderQuotes();renderEssays();renderLaws();renderSettings();
+  renderChips();renderQuotes();renderEssays();renderLaws();renderSettings();updateNotifUI();
+
+  document.getElementById('notif-toggle').addEventListener('click',toggleNotif);
+  document.getElementById('notif-test').addEventListener('click',function(){
+    if(!showQuoteNotification())updateNotifUI();
+  });
 
   var navs=document.querySelectorAll('.bnav-btn');
   for(var i=0;i<navs.length;i++){
@@ -589,6 +683,8 @@ function init(){
 
   var ov=document.getElementById('settings-overlay');
   ov.addEventListener('click',function(ev){if(ev.target===ov)ov.classList.remove('open');});
+
+  maybeFireDaily();
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- skill:chrome -->
+<style>
+/* Credit line — bottom-right */
+.design-ui-credit {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  font: 11px/1 system-ui, sans-serif;
+  color: rgba(128,128,128,0.5);
+  pointer-events: none;
+  z-index: 2147483647;
+  transition: opacity 0.4s ease;
+  user-select: none;
+  letter-spacing: 0.02em;
+}
+
+/* Hide chrome on touch devices */
+@media (hover: none) {
+  .design-ui-credit { display: none; }
+}
+
+/* Print fixes */
+@media print {
+  * {
+    transition: none !important;
+    animation: none !important;
+    box-shadow: none !important;
+  }
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .design-ui-credit { display: none !important; }
+}
+
+</style>
+<script>
+(function () {
+    // Design-ui pages are single compositions, so the whole body is editable.
+    function markEditable() {
+        document.body.classList.add('artifact-editable');
+    }
+
+    // Credit badge with idle-fade. Hover devices only.
+    function initChromeUI() {
+        if (!matchMedia('(hover: hover)').matches) return;
+
+        var credit = document.createElement('div');
+        credit.className = 'design-ui-credit';
+        credit.setAttribute('aria-hidden', 'true');
+        credit.innerHTML = '\u{1F49C} by <a href="https://mtrxdigital.com" target="_blank" rel="noopener noreferrer">Kevin</a>';
+        document.body.appendChild(credit);
+
+        var timer = null;
+        var fade = function (out) { credit.style.opacity = out ? '0' : ''; };
+        fade(true);
+        var show = function () {
+            fade(false);
+            clearTimeout(timer);
+            timer = setTimeout(function () { fade(true); }, 3000);
+        };
+        document.addEventListener('mousemove', show);
+        show();
+    }
+
+    function init() {
+        markEditable();
+        initChromeUI();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+
+</script>
+<!-- /skill:chrome -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>MindForge</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=DM+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Bitter:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:oklch(92% 0.006 50);--ink-mid:oklch(72% 0.005 50);--ink-light:oklch(48% 0.004 50);
+  --bg:oklch(10% 0.008 50);--bg-sub:oklch(14% 0.01 50);--surface:oklch(17% 0.008 50);
+  --border:oklch(22% 0.006 50);--accent:oklch(68% 0.15 40);--accent-soft:oklch(20% 0.03 40);
+  --serif:'Instrument Serif',serif;--sans:'Space Grotesk',system-ui,sans-serif;
+  --body-font:var(--sans);--heading-font:var(--serif);
+}
+[data-mood="dark"]{--ink:oklch(92% 0.006 50);--ink-mid:oklch(72% 0.005 50);--ink-light:oklch(48% 0.004 50);--bg:oklch(10% 0.008 50);--bg-sub:oklch(14% 0.01 50);--surface:oklch(17% 0.008 50);--border:oklch(22% 0.006 50);--accent:oklch(68% 0.15 40);--accent-soft:oklch(20% 0.03 40);}
+[data-mood="light"]{--ink:oklch(14% 0.008 50);--ink-mid:oklch(38% 0.006 50);--ink-light:oklch(55% 0.005 50);--bg:oklch(98% 0.004 50);--bg-sub:oklch(95% 0.008 50);--surface:oklch(99% 0.003 50);--border:oklch(90% 0.006 50);--accent:oklch(50% 0.15 35);--accent-soft:oklch(94% 0.025 35);}
+[data-mood="warm"]{--ink:oklch(16% 0.015 55);--ink-mid:oklch(40% 0.012 55);--ink-light:oklch(52% 0.008 55);--bg:oklch(95% 0.022 62);--bg-sub:oklch(92% 0.028 58);--surface:oklch(97% 0.016 60);--border:oklch(87% 0.016 60);--accent:oklch(52% 0.16 42);--accent-soft:oklch(92% 0.03 42);}
+[data-mood="ocean"]{--ink:oklch(90% 0.008 225);--ink-mid:oklch(68% 0.006 225);--ink-light:oklch(45% 0.005 225);--bg:oklch(12% 0.018 230);--bg-sub:oklch(16% 0.02 228);--surface:oklch(19% 0.016 228);--border:oklch(24% 0.012 228);--accent:oklch(65% 0.12 210);--accent-soft:oklch(20% 0.025 220);}
+[data-mood="forest"]{--ink:oklch(90% 0.008 148);--ink-mid:oklch(65% 0.006 148);--ink-light:oklch(42% 0.005 148);--bg:oklch(11% 0.015 150);--bg-sub:oklch(15% 0.018 148);--surface:oklch(18% 0.014 148);--border:oklch(23% 0.01 148);--accent:oklch(62% 0.1 150);--accent-soft:oklch(18% 0.02 150);}
+[data-mood="midnight"]{--ink:oklch(88% 0.01 280);--ink-mid:oklch(62% 0.008 280);--ink-light:oklch(40% 0.006 280);--bg:oklch(8% 0.015 280);--bg-sub:oklch(12% 0.018 278);--surface:oklch(15% 0.015 278);--border:oklch(20% 0.012 278);--accent:oklch(68% 0.16 300);--accent-soft:oklch(16% 0.025 290);}
+[data-mood="ember"]{--ink:oklch(92% 0.008 35);--ink-mid:oklch(70% 0.01 35);--ink-light:oklch(46% 0.008 35);--bg:oklch(10% 0.022 25);--bg-sub:oklch(14% 0.026 28);--surface:oklch(18% 0.02 28);--border:oklch(24% 0.018 28);--accent:oklch(70% 0.18 35);--accent-soft:oklch(18% 0.03 30);}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--body-font);background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;overflow-x:hidden;transition:background 0.5s,color 0.4s;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px 24px 120px;position:relative;text-align:center;}
+.hero-date{font-size:clamp(0.72rem,3vw,0.85rem);letter-spacing:0.15em;text-transform:uppercase;font-weight:600;color:var(--ink-light);margin-bottom:clamp(28px,6vh,52px);}
+.hero-quote{font-family:var(--heading-font);font-size:clamp(2rem,8vw,3.4rem);line-height:1.25;font-style:italic;max-width:18ch;margin:0 auto clamp(24px,4vh,32px);color:var(--ink);transition:opacity 0.4s;}
+.hero-author{font-size:clamp(1rem,3.6vw,1.15rem);font-weight:600;color:var(--accent);margin-bottom:5px;}
+.hero-source{font-size:clamp(0.85rem,3vw,0.95rem);color:var(--ink-light);font-style:italic;}
+.hero-tags{display:flex;gap:8px;justify-content:center;margin-top:clamp(18px,3vh,24px);flex-wrap:wrap;}
+.hero-tag{font-size:clamp(0.62rem,2.4vw,0.68rem);padding:5px 13px;border-radius:20px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent);border:1px solid var(--border);}
+.hero-refresh{margin-top:clamp(28px,5vh,44px);width:52px;height:52px;border-radius:50%;border:1.5px solid var(--border);background:transparent;color:var(--ink-light);cursor:pointer;font-size:1.4rem;display:flex;align-items:center;justify-content:center;transition:all 0.3s cubic-bezier(0.25,1,0.5,1);}
+.hero-refresh:hover,.hero-refresh:active{border-color:var(--accent);color:var(--accent);transform:rotate(180deg);}
+
+.scroll-hint{position:absolute;bottom:clamp(84px,12vh,100px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink-light);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;animation:hintPulse 2.5s ease-in-out infinite;}
+.scroll-arrow{width:16px;height:16px;border-right:1.5px solid var(--ink-light);border-bottom:1.5px solid var(--ink-light);transform:rotate(45deg);margin-top:-4px;}
+@keyframes hintPulse{0%,100%{opacity:0.4;}50%{opacity:0.85;}}
+
+/* ===== BYLINE ===== */
+.byline{position:absolute;bottom:clamp(90px,13vh,110px);left:0;right:0;text-a11:09 PM 7/23/2026lign:center;font-size:0.72rem;color:var(--ink-light);letter-spacing:0.04em;}
+.byline a{color:var(--accent);text-decoration:none;font-weight:600;border-bottom:1px solid transparent;transition:border-color 0.2s;}
+.byline a:hover{border-bottom-color:var(--accent);}
+.section-byline{text-align:center;padding:28px 0 8px;font-size:0.72rem;color:var(--ink-light);letter-spacing:0.04em;}
+.section-byline a{color:var(--accent);text-decoration:none;font-weight:600;}
+.section-byline a:hover{text-decoration:underline;}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-sub);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 0 max(10px,env(safe-area-inset-bottom));z-index:50;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 14px;border:none;background:none;color:var(--ink-light);cursor:pointer;font-family:var(--body-font);font-size:0.62rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;transition:color 0.2s;-webkit-tap-highlight-color:transparent;}
+.bnav-btn .bnav-icon{font-size:1.35rem;line-height:1;}
+.bnav-btn.active{color:var(--accent);}
+.bnav-btn:hover{color:var(--ink);}
+
+/* ===== SECTIONS ===== */
+.section{display:none;padding:0 clamp(18px,5vw,32px) calc(100px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto;}
+.section.active{display:block;}
+.section-top{padding-top:28px;padding-bottom:18px;position:sticky;top:0;background:var(--bg);z-index:10;}
+.section-title{font-family:var(--heading-font);font-size:clamp(1.7rem,6vw,2rem);margin-bottom:5px;}
+.section-sub{font-size:clamp(0.82rem,3vw,0.85rem);color:var(--ink-light);}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 0;margin-bottom:8px;border:none;background:none;color:var(--accent);cursor:pointer;font-family:var(--body-font);font-size:0.9rem;font-weight:600;-webkit-tap-highlight-color:transparent;}
+.back-btn:hover{text-decoration:underline;}
+
+.filter-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;padding:4px 0;}
+.chip{padding:9px 16px;border-radius:20px;font-size:0.82rem;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--ink-mid);transition:all 0.2s;user-select:none;font-family:var(--body-font);-webkit-tap-highlight-color:transparent;}
+.chip:hover{border-color:var(--ink-light);}
+.chip.active{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+.chip-count{font-size:0.64rem;color:var(--ink-light);margin-left:3px;}
+.qcount{font-size:0.82rem;color:var(--ink-light);margin-bottom:18px;}
+.qgrid{display:grid;grid-template-columns:1fr;gap:12px;padding-bottom:24px;}
+.qc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px 22px;transition:border-color 0.2s;}
+.qc:hover{border-color:var(--ink-light);}
+.qc-text{font-family:var(--heading-font);font-size:1.25rem;line-height:1.4;font-style:italic;margin-bottom:10px;}
+.qc-author{font-size:0.82rem;font-weight:600;color:var(--accent);}
+.qc-src{font-weight:400;color:var(--ink-light);font-style:italic;margin-left:3px;}
+.qc-tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
+.qt{font-size:0.58rem;padding:3px 7px;border-radius:4px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent);}
+
+.unlock-bar{background:var(--surface);border-radius:10px;padding:16px 18px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);gap:12px;}
+.unlock-text{font-size:0.86rem;color:var(--ink-mid);}
+.unlock-text strong{color:var(--ink);}
+.unlock-next{font-size:0.74rem;color:var(--ink-light);white-space:nowrap;}
+.ec{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:14px;cursor:pointer;transition:border-color 0.2s;-webkit-tap-highlight-color:transparent;}
+.ec:hover{border-color:var(--ink-light);}
+.ec.expanded{cursor:default;}
+.ec-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;}
+.ec-num{font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;color:var(--ink-light);margin-bottom:4px;}
+.ec-title{font-family:var(--heading-font);font-size:1.35rem;margin-bottom:4px;line-height:1.2;}
+.ec-sub{font-size:0.85rem;color:var(--ink-mid);}
+.ec-toggle{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--ink-light);cursor:pointer;font-size:1.1rem;flex-shrink:0;transition:transform 0.25s;display:flex;align-items:center;justify-content:center;}
+.ec.expanded .ec-toggle{transform:rotate(45deg);}
+.ec-body{max-height:0;overflow:hidden;transition:max-height 0.5s cubic-bezier(0.25,1,0.5,1);}
+.ec.expanded .ec-body{max-height:6000px;}
+.ec-content{padding-top:18px;border-top:1px solid var(--border);margin-top:16px;font-size:0.95rem;line-height:1.75;color:var(--ink-mid);}
+.ec-content p{margin-bottom:14px;max-width:65ch;}
+.ec-content strong{color:var(--ink);font-weight:600;}
+.ec-content blockquote{font-family:var(--heading-font);font-size:1.15rem;font-style:italic;color:var(--ink);padding:14px 20px;background:var(--bg-sub);border-radius:8px;margin:16px 0;}
+.ec-tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
+.ec-new{font-size:0.56rem;padding:3px 7px;border-radius:4px;background:var(--accent);color:var(--bg);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-left:6px;}
+.ec-lock{font-size:0.78rem;color:var(--ink-light);margin-top:6px;}
+
+.lc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:14px;display:grid;grid-template-columns:52px 1fr;gap:16px;align-items:start;}
+.lc-num{font-family:var(--heading-font);font-size:2.1rem;color:var(--accent);line-height:1;}
+.lc-title{font-size:1.02rem;font-weight:700;margin-bottom:3px;line-height:1.25;}
+.lc-sub{font-size:0.84rem;color:var(--ink-mid);font-style:italic;margin-bottom:10px;}
+.lc-desc{font-size:0.88rem;color:var(--ink-mid);line-height:1.6;}
+.lc-desc strong{color:var(--ink);font-weight:600;}
+.lc-when{margin-top:14px;display:grid;grid-template-columns:1fr;gap:8px;}
+.lc-box{padding:12px 14px;border-radius:8px;font-size:0.82rem;line-height:1.5;}
+.lc-box.use{background:var(--bg-sub);}
+.lc-box.avoid{background:oklch(20% 0.02 15);}
+[data-mood="light"] .lc-box.avoid,[data-mood="warm"] .lc-box.avoid{background:oklch(95% 0.02 15);}
+.lc-box-label{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;margin-bottom:4px;}
+.lc-box.use .lc-box-label{color:var(--accent);}
+.lc-box.avoid .lc-box-label{color:oklch(65% 0.14 15);}
+[data-mood="light"] .lc-box.avoid .lc-box-label,[data-mood="warm"] .lc-box.avoid .lc-box-label{color:oklch(48% 0.14 15);}
+.lc-action{margin-top:12px;background:var(--bg-sub);padding:12px 14px;border-radius:8px;font-size:0.84rem;line-height:1.5;}
+.lc-action-label{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:var(--accent);margin-bottom:4px;}
+
+.settings-overlay{position:fixed;inset:0;background:oklch(0% 0 0 / 0.5);z-index:100;display:none;align-items:flex-end;justify-content:center;}
+.settings-overlay.open{display:flex;}
+.settings-panel{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px 22px calc(28px + env(safe-area-inset-bottom));width:100%;max-width:520px;max-height:82vh;max-height:82dvh;overflow-y:auto;animation:slideUp 0.3s cubic-bezier(0.25,1,0.5,1);}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.settings-handle{width:40px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 22px;}
+.settings-title{font-family:var(--heading-font);font-size:1.5rem;margin-bottom:22px;}
+.settings-section{margin-bottom:22px;}
+.settings-label{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);margin-bottom:10px;}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;}
+.sgrid.wide{grid-template-columns:1fr 1fr;}
+.sopt{padding:12px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;text-align:center;transition:all 0.2s;-webkit-tap-highlight-color:transparent;}
+.sopt:hover{border-color:var(--ink-light);}
+.sopt.active{border-color:var(--accent);background:var(--accent-soft);}
+.sopt-name{font-size:0.8rem;font-weight:600;}
+.sopt-preview{font-size:0.64rem;color:var(--ink-light);margin-top:3px;}
+.mood-dot{width:18px;height:18px;border-radius:50%;margin:0 auto 5px;border:1px solid var(--border);}
+.settings-foot{text-align:center;padding-top:8px;font-size:0.74rem;color:var(--ink-light);}
+.settings-foot a{color:var(--accent);text-decoration:none;font-weight:600;}
+.settings-foot a:hover{text-decoration:underline;}
+
+@media(min-width:640px){.qgrid{grid-template-columns:1fr 1fr;}.lc-when{grid-template-columns:1fr 1fr;}}
+@media(min-width:768px){
+  .hero-quote{max-width:20ch;}
+  .bottom-nav{left:50%;transform:translateX(-50%);max-width:440px;border-radius:16px 16px 0 0;border-left:1px solid var(--border);border-right:1px solid var(--border);}
+  .settings-panel{border-radius:20px;margin-bottom:5vh;}
+  .settings-overlay{align-items:center;}
+  @keyframes slideUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+}
+@media(min-width:1024px){.hero-quote{font-size:clamp(2.4rem,3.6vw,3.6rem);}}
+</style>
+</head>
+<body>
+
+<section class="hero" id="hero">
+  <div class="hero-date" id="hero-date">Loading...</div>
+  <div class="hero-quote" id="hero-quote">Loading your quote...</div>
+  <div class="hero-author" id="hero-author"></div>
+  <div class="hero-source" id="hero-source"></div>
+  <div class="hero-tags" id="hero-tags"></div>
+  <button class="hero-refresh" id="hero-refresh" title="New quote">↻</button>
+  <div class="scroll-hint"><span>Explore</span><div class="scroll-arrow"></div></div>
+</section>
+
+<div class="section" id="sec-quotes">
+  <div class="section-top">
+    <button class="back-btn" id="back-quotes">← Back</button>
+    <div class="section-title">Quotes</div>
+    <div class="section-sub">Filter by theme, pick multiple</div>
+  </div>
+  <div class="filter-row" id="filter-chips"></div>
+  <div class="qcount" id="qcount"></div>
+  <div class="qgrid" id="qgrid"></div>
+  <div class="section-byline">Made by <a href="https://mtrxdigital.com" target="_blank" rel="noopener">Kevin</a></div>
+</div>
+
+<div class="section" id="sec-essays">
+  <div class="section-top">
+    <button class="back-btn" id="back-essays">← Back</button>
+    <div class="section-title">Essays</div>
+    <div class="section-sub">Deep reads on mental strength</div>
+  </div>
+  <div class="unlock-bar"><div class="unlock-text" id="eu-text"></div><div class="unlock-next" id="eu-next"></div></div>
+  <div id="essays-box"></div>
+  <div class="section-byline">Made by <a href="https://mtrxdigital.com" target="_blank" rel="noopener">Kevin</a></div>
+</div>
+
+<div class="section" id="sec-laws">
+  <div class="section-top">
+    <button class="back-btn" id="back-laws">← Back</button>
+    <div class="section-title">Power Laws</div>
+    <div class="section-sub">When to use, when to avoid</div>
+  </div>
+  <div id="laws-box"></div>
+  <div class="section-byline">Made by <a href="https://mtrxdigital.com" target="_blank" rel="noopener">Kevin</a></div>
+</div>
+
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bnav-btn active" data-nav="home"><span class="bnav-icon">◉</span>Today</button>
+  <button class="bnav-btn" data-nav="quotes"><span class="bnav-icon">❝</span>Quotes</button>
+  <button class="bnav-btn" data-nav="essays"><span class="bnav-icon">📖</span>Essays</button>
+  <button class="bnav-btn" data-nav="laws"><span class="bnav-icon">⚡</span>Laws</button>
+  <button class="bnav-btn" data-nav="settings"><span class="bnav-icon">⚙</span>Settings</button>
+</nav>
+
+<div class="settings-overlay" id="settings-overlay">
+  <div class="settings-panel">
+    <div class="settings-handle"></div>
+    <div class="settings-title">Settings</div>
+    <div class="settings-section"><div class="settings-label">Mood</div><div class="sgrid" id="sg-mood"></div></div>
+    <div class="settings-section"><div class="settings-label">Body Font</div><div class="sgrid wide" id="sg-body"></div></div>
+    <div class="settings-section"><div class="settings-label">Quote Font</div><div class="sgrid wide" id="sg-head"></div></div>
+    <div class="settings-section"><div class="settings-label">Text Size</div><div class="sgrid" id="sg-size"></div></div>
+    <div class="settings-foot">Made by <a href="https://mtrxdigital.com" target="_blank" rel="noopener">Kevin</a></div>
+  </div>
+</div>
+
+<script>
+var SAFE={_m:{},get:function(k){try{return localStorage.getItem(k);}catch(e){return this._m[k]!==undefined?this._m[k]:null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){this._m[k]=v;}}};
+
+var TH={motivation:"Motivation","self-belief":"Self-Belief","feeling-low":"Feeling Low",discipline:"Discipline",courage:"Courage",stoic:"Stoic Wisdom",power:"Power",gratitude:"Gratitude",mindset:"Mindset",strategy:"Strategy"};
+var MOODS=[{id:"dark",name:"Dark",dot:"oklch(20% 0.01 50)"},{id:"light",name:"Light",dot:"oklch(95% 0.004 50)"},{id:"warm",name:"Warm",dot:"oklch(82% 0.06 58)"},{id:"ocean",name:"Ocean",dot:"oklch(55% 0.08 220)"},{id:"forest",name:"Forest",dot:"oklch(50% 0.06 150)"},{id:"midnight",name:"Midnight",dot:"oklch(25% 0.04 280)"},{id:"ember",name:"Ember",dot:"oklch(50% 0.12 30)"}];
+var BF=[{id:"grotesk",name:"Space Grotesk",css:"'Space Grotesk',system-ui,sans-serif"},{id:"dm",name:"DM Sans",css:"'DM Sans',system-ui,sans-serif"},{id:"mono",name:"JetBrains Mono",css:"'JetBrains Mono',monospace"},{id:"bitter",name:"Bitter",css:"'Bitter',serif"}];
+var HF=[{id:"instrument",name:"Instrument Serif",css:"'Instrument Serif',serif"},{id:"playfair",name:"Playfair Display",css:"'Playfair Display',serif"},{id:"lora",name:"Lora",css:"'Lora',serif"},{id:"grotesk",name:"Space Grotesk",css:"'Space Grotesk',system-ui,sans-serif"}];
+var SZ=[{id:"sm",name:"Small",m:0.92},{id:"md",name:"Medium",m:1},{id:"lg",name:"Large",m:1.14}];
+
+var Q=[
+{q:"You have power over your mind, not outside events. Realize this, and you will find strength.",a:"Marcus Aurelius",s:"Meditations",t:["motivation","stoic"]},
+{q:"Impossible is just a big word thrown around by small men who find it easier to live in the world they've been given than to explore the power they have to change it.",a:"Muhammad Ali",t:["motivation","self-belief"]},
+{q:"I hated every minute of training, but I said, 'Don't quit. Suffer now and live the rest of your life as a champion.'",a:"Muhammad Ali",t:["motivation","discipline"]},
+{q:"The impediment to action advances action. What stands in the way becomes the way.",a:"Marcus Aurelius",s:"Meditations",t:["motivation","stoic"]},
+{q:"If my mind can conceive it, and my heart can believe it, then I can achieve it.",a:"Muhammad Ali",t:["motivation","self-belief"]},
+{q:"He who has a why to live can bear almost any how.",a:"Friedrich Nietzsche",t:["motivation","feeling-low"]},
+{q:"The fight is won or lost far away from witnesses, behind the lines, in the gym, long before I dance under those lights.",a:"Muhammad Ali",t:["motivation","discipline"]},
+{q:"It is not because things are difficult that we do not dare; it is because we do not dare that they are difficult.",a:"Seneca",s:"Letters to Lucilius",t:["motivation","courage"]},
+{q:"Don't count the days. Make the days count.",a:"Muhammad Ali",t:["motivation"]},
+{q:"The secret of getting ahead is getting started.",a:"Mark Twain",t:["motivation"]},
+{q:"Vision without execution is hallucination.",a:"Thomas Edison",t:["motivation","discipline"]},
+{q:"Well done is better than well said.",a:"Benjamin Franklin",t:["motivation","discipline"]},
+{q:"The best time to plant a tree was twenty years ago. The second best time is now.",a:"Chinese Proverb",t:["motivation"]},
+{q:"What we do in life echoes in eternity.",a:"Marcus Aurelius",t:["motivation","stoic"]},
+{q:"I am the greatest. I said that even before I knew I was.",a:"Muhammad Ali",t:["self-belief","motivation"]},
+{q:"To be a great champion you must believe you are the best. If you're not, pretend you are.",a:"Muhammad Ali",t:["self-belief"]},
+{q:"The only person you are destined to become is the person you decide to be.",a:"Ralph Waldo Emerson",t:["self-belief"]},
+{q:"No one can make you feel inferior without your consent.",a:"Eleanor Roosevelt",t:["self-belief","courage"]},
+{q:"A man is but the product of his thoughts. What he thinks, he becomes.",a:"Mahatma Gandhi",t:["self-belief","power"]},
+{q:"What lies behind us and what lies before us are tiny matters compared to what lies within us.",a:"Ralph Waldo Emerson",t:["self-belief"]},
+{q:"Your worst enemy cannot harm you as much as your own unguarded thoughts.",a:"Buddha",s:"Dhammapada",t:["self-belief","stoic"]},
+{q:"The mind is everything. What you think, you become.",a:"Buddha",t:["self-belief","power","mindset"]},
+{q:"Champions aren't made in gyms. Champions are made from something deep inside them.",a:"Muhammad Ali",t:["self-belief","motivation"]},
+{q:"Whether you think you can, or you think you can't, you're right.",a:"Henry Ford",t:["self-belief","mindset"]},
+{q:"Until you make the unconscious conscious, it will direct your life and you will call it fate.",a:"Carl Jung",t:["self-belief","power","mindset"]},
+{q:"I am not what happened to me. I am what I choose to become.",a:"Carl Jung",t:["self-belief","feeling-low"]},
+{q:"In the depth of winter, I finally learned that within me there lay an invincible summer.",a:"Albert Camus",t:["feeling-low","courage"]},
+{q:"The world breaks everyone, and afterward, many are strong at the broken places.",a:"Ernest Hemingway",s:"A Farewell to Arms",t:["feeling-low"]},
+{q:"We suffer more often in imagination than in reality.",a:"Seneca",s:"Letters to Lucilius",t:["feeling-low","stoic"]},
+{q:"The wound is the place where the light enters you.",a:"Rumi",t:["feeling-low","gratitude"]},
+{q:"If you are going through hell, keep going.",a:"Winston Churchill",t:["feeling-low","courage"]},
+{q:"Rock bottom became the solid foundation on which I rebuilt my life.",a:"J.K. Rowling",t:["feeling-low"]},
+{q:"Between stimulus and response there is a space. In that space is our power to choose our response.",a:"Viktor Frankl",s:"Man's Search for Meaning",t:["feeling-low","power","mindset"]},
+{q:"Only a man who knows what it is like to be defeated can reach down to the bottom of his soul and come back with an extra ounce of power.",a:"Muhammad Ali",t:["feeling-low","motivation"]},
+{q:"You may encounter many defeats, but you must not be defeated.",a:"Maya Angelou",t:["feeling-low","courage"]},
+{q:"Hardships often prepare ordinary people for an extraordinary destiny.",a:"C.S. Lewis",t:["feeling-low","motivation"]},
+{q:"The last of human freedoms is to choose one's attitude in any given set of circumstances.",a:"Viktor Frankl",s:"Man's Search for Meaning",t:["feeling-low","power"]},
+{q:"They tried to bury us. They didn't know we were seeds.",a:"Mexican Proverb",t:["feeling-low","courage"]},
+{q:"Sometimes even to live is an act of courage.",a:"Seneca",s:"Letters to Lucilius",t:["feeling-low","stoic","courage"]},
+{q:"This too shall pass.",a:"Persian Proverb",t:["feeling-low","stoic"]},
+{q:"I never lose. I either win or learn.",a:"Nelson Mandela",t:["feeling-low","self-belief"]},
+{q:"Out of suffering have emerged the strongest souls.",a:"Khalil Gibran",t:["feeling-low"]},
+{q:"I do not fear the man who has practiced 10,000 kicks once, but I fear the man who has practiced one kick 10,000 times.",a:"Bruce Lee",t:["discipline"]},
+{q:"It is not that we have a short time to live, but that we waste a great deal of it.",a:"Seneca",s:"On the Shortness of Life",t:["discipline","stoic"]},
+{q:"How long are you going to wait before you demand the best for yourself?",a:"Epictetus",s:"Discourses",t:["discipline","motivation"]},
+{q:"Be tolerant with others and strict with yourself.",a:"Marcus Aurelius",s:"Meditations",t:["discipline","stoic"]},
+{q:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.",a:"Aristotle",t:["discipline"]},
+{q:"No great thing is created suddenly.",a:"Epictetus",s:"Discourses",t:["discipline","stoic"]},
+{q:"Self-control is strength. Right thought is mastery. Calmness is power.",a:"James Allen",s:"As a Man Thinketh",t:["discipline","power","mindset"]},
+{q:"Under pressure, you don't rise to the occasion; you sink to the level of your training.",a:"Navy SEAL Saying",t:["discipline"]},
+{q:"While we wait for life, life passes.",a:"Seneca",s:"On the Shortness of Life",t:["discipline","stoic"]},
+{q:"He who is not courageous enough to take risks will accomplish nothing in life.",a:"Muhammad Ali",t:["courage","motivation"]},
+{q:"It is not death that a man should fear, but never beginning to live.",a:"Marcus Aurelius",s:"Meditations",t:["courage","stoic"]},
+{q:"Courage is not the absence of fear, but the triumph over it.",a:"Nelson Mandela",t:["courage"]},
+{q:"It is not the critic who counts. The credit belongs to the man who is actually in the arena.",a:"Theodore Roosevelt",t:["courage","motivation"]},
+{q:"Float like a butterfly, sting like a bee.",a:"Muhammad Ali",t:["courage","self-belief"]},
+{q:"Life shrinks or expands in proportion to one's courage.",a:"Anaïs Nin",t:["courage"]},
+{q:"Man cannot discover new oceans unless he has the courage to lose sight of the shore.",a:"André Gide",t:["courage"]},
+{q:"Do the thing you fear, and the death of fear is certain.",a:"Ralph Waldo Emerson",t:["courage"]},
+{q:"Fear does not stop death. It stops life.",a:"Naguib Mahfouz",t:["courage","feeling-low"]},
+{q:"Do not pray for an easy life; pray for the strength to endure a difficult one.",a:"Bruce Lee",t:["courage","feeling-low"]},
+{q:"The happiness of your life depends upon the quality of your thoughts.",a:"Marcus Aurelius",s:"Meditations",t:["stoic","mindset"]},
+{q:"Dwell on the beauty of life. Watch the stars, and see yourself running with them.",a:"Marcus Aurelius",s:"Meditations",t:["stoic","gratitude"]},
+{q:"People are not disturbed by things, but by the views they take of them.",a:"Epictetus",s:"Enchiridion",t:["stoic","mindset"]},
+{q:"Luck is what happens when preparation meets opportunity.",a:"Seneca",t:["stoic","discipline"]},
+{q:"A gem cannot be polished without friction, nor a man perfected without trials.",a:"Seneca",t:["stoic","feeling-low"]},
+{q:"Waste no more time arguing about what a good man should be. Be one.",a:"Marcus Aurelius",s:"Meditations",t:["stoic","discipline"]},
+{q:"Choose not to be harmed, and you won't feel harmed.",a:"Marcus Aurelius",s:"Meditations",t:["stoic","power"]},
+{q:"Make the best use of what is in your power, and take the rest as it happens.",a:"Epictetus",s:"Discourses",t:["stoic"]},
+{q:"Think of yourself as dead. You have lived your life. Now take what's left and live it properly.",a:"Marcus Aurelius",s:"Meditations",t:["stoic"]},
+{q:"You could leave life right now. Let that determine what you do and say and think.",a:"Marcus Aurelius",s:"Meditations",t:["stoic"]},
+{q:"Difficulties strengthen the mind, as labor does the body.",a:"Seneca",t:["stoic","feeling-low"]},
+{q:"The supreme art of war is to subdue the enemy without fighting.",a:"Sun Tzu",s:"The Art of War",t:["power","strategy"]},
+{q:"Know thy enemy and know yourself; in a hundred battles, you will never be defeated.",a:"Sun Tzu",s:"The Art of War",t:["power","strategy"]},
+{q:"Mastering others is strength. Mastering yourself is true power.",a:"Lao Tzu",s:"Tao Te Ching",t:["power","discipline"]},
+{q:"Better to be a warrior in a garden than a gardener in a war.",a:"Miyamoto Musashi",t:["power","discipline"]},
+{q:"Think lightly of yourself and deeply of the world.",a:"Miyamoto Musashi",s:"The Book of Five Rings",t:["power","stoic"]},
+{q:"Empty your mind, be formless, shapeless, like water.",a:"Bruce Lee",t:["power","stoic"]},
+{q:"The best fighter is never angry.",a:"Lao Tzu",s:"Tao Te Ching",t:["power","stoic"]},
+{q:"Opportunities multiply as they are seized.",a:"Sun Tzu",s:"The Art of War",t:["power","strategy","motivation"]},
+{q:"Every battle is won before it is fought.",a:"Sun Tzu",s:"The Art of War",t:["strategy","power"]},
+{q:"Appear weak when you are strong, and strong when you are weak.",a:"Sun Tzu",s:"The Art of War",t:["strategy","power"]},
+{q:"Never interrupt your enemy when he is making a mistake.",a:"Napoleon Bonaparte",t:["strategy","power"]},
+{q:"The lion cannot protect himself from traps, and the fox cannot defend himself from wolves. One must be a fox to recognize traps, and a lion to frighten wolves.",a:"Niccolò Machiavelli",s:"The Prince",t:["strategy","power"]},
+{q:"When you arise in the morning, think of what a precious privilege it is to be alive.",a:"Marcus Aurelius",s:"Meditations",t:["gratitude","stoic"]},
+{q:"Do not spoil what you have by desiring what you have not.",a:"Epicurus",t:["gratitude"]},
+{q:"There are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is.",a:"Albert Einstein",t:["gratitude"]},
+{q:"When you realize nothing is lacking, the whole world belongs to you.",a:"Lao Tzu",s:"Tao Te Ching",t:["gratitude"]},
+{q:"Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.",a:"Rumi",t:["gratitude","stoic","mindset"]},
+{q:"Happiness is not something readymade. It comes from your own actions.",a:"Dalai Lama",t:["gratitude","motivation"]},
+{q:"Wealth consists not in having great possessions, but in having few wants.",a:"Epictetus",t:["gratitude","stoic"]},
+{q:"Let the beauty of what you love be what you do.",a:"Rumi",t:["gratitude","motivation"]},
+{q:"True happiness is to enjoy the present, without anxious dependence upon the future.",a:"Seneca",t:["gratitude","stoic"]},
+{q:"Imagination is more important than knowledge.",a:"Albert Einstein",t:["mindset","self-belief"]},
+{q:"An unexamined life is not worth living.",a:"Socrates",t:["mindset","stoic"]},
+{q:"Knowing yourself is the beginning of all wisdom.",a:"Aristotle",t:["mindset","stoic"]},
+{q:"The greatest weapon against stress is our ability to choose one thought over another.",a:"William James",t:["mindset","feeling-low"]},
+{q:"Stay hungry, stay foolish.",a:"Steve Jobs",t:["motivation","courage"]},
+{q:"The only true wisdom is in knowing you know nothing.",a:"Socrates",t:["mindset","stoic"]},
+{q:"Give me six hours to chop down a tree and I will spend the first four sharpening the axe.",a:"Abraham Lincoln",t:["strategy","discipline"]},
+{q:"Nearly all men can stand adversity, but if you want to test a man's character, give him power.",a:"Abraham Lincoln",t:["power"]},
+{q:"Education is the most powerful weapon which you can use to change the world.",a:"Nelson Mandela",t:["power","motivation"]},
+{q:"Darkness cannot drive out darkness; only light can do that.",a:"Martin Luther King Jr.",t:["feeling-low","courage"]},
+{q:"If you always put limits on everything you do, it will spread into your work and your life. There are no limits.",a:"Bruce Lee",t:["self-belief","motivation"]},
+{q:"The reasonable man adapts himself to the world; the unreasonable one persists in trying to adapt the world to himself. Therefore all progress depends on the unreasonable man.",a:"George Bernard Shaw",t:["power","courage","strategy"]},
+{q:"Absorb what is useful, discard what is not, add what is uniquely your own.",a:"Bruce Lee",t:["discipline","self-belief"]},
+{q:"Watch your thoughts, they become your destiny.",a:"Lao Tzu",t:["power","mindset"]}
+];
+
+var ESSAYS=[
+{n:"01",t:"The Dichotomy of Control",sub:"Why 90% of your stress is self-inflicted",tags:["stoic","power"],body:"<p>Epictetus opened his Enchiridion with the most powerful distinction in philosophy: <strong>\"Some things are in our control and others not.\"</strong> In our control: opinions, desires, aversions, actions. Not in our control: bodies, possessions, reputations, other people.</p><p>Most people spend 80% of their mental energy on category two. They worry about what a client thinks. They stress about the economy. All wasted voltage.</p><blockquote>\"Make the best use of what is in your power, and take the rest as it happens.\" &mdash; Epictetus</blockquote><p><strong>The practice:</strong> every time you feel anxiety, ask: \"Is this within my control?\" If yes, act. If no, release it. Suppression is holding a beach ball underwater. Release is letting go and watching it float away.</p><p>Marcus Aurelius ran the Roman Empire using this. He couldn't control plagues, wars, or betrayals. He could control his response, preparation, and character. That was enough.</p><p><strong>Start here:</strong> tonight, write three things stressing you. Mark each C or NC. For NCs, write one sentence releasing them. For Cs, write one action for tomorrow.</p>"},
+{n:"02",t:"The Compound Effect of Thoughts",sub:"How self-talk shapes reality",tags:["self-belief","mindset"],body:"<p>Up to <strong>77% of average self-talk is negative</strong> (Helmstetter). Most isn't dramatic; it's casual: \"I'm terrible with money,\" \"I always mess this up.\"</p><p>Your subconscious doesn't distinguish serious declarations from throwaway comments. Every statement is an instruction.</p><blockquote>\"The mind is everything. What you think, you become.\" &mdash; Buddha</blockquote><p>This is the Reticular Activating System: <strong>your brain prioritizes whatever you've told it matters.</strong> Tell it \"I can't find good clients\" and it filters out opportunities right in front of you.</p><p>Murphy called it the conscious-subconscious relationship. CBT calls it thought restructuring. Neuroscience calls it neuroplasticity. Same mechanism.</p><p><strong>Start here:</strong> rubber band on wrist for 48 hours. Snap it on every self-limiting statement. Rephrase immediately.</p>"},
+{n:"03",t:"Why Comfort Is the Enemy",sub:"Voluntary hardship as mental training",tags:["discipline","courage"],body:"<p>Seneca practiced \"voluntary discomfort\": fasting, hard floors, rough clothing. Not punishment, but training. <strong>If you've practiced being uncomfortable, real adversity can't break you.</strong></p><blockquote>\"Set aside days during which you shall be content with the scantiest fare, saying: Is this the condition that I feared?\" &mdash; Seneca</blockquote><p>Cold exposure research: regular cold showers increase norepinephrine by 200-300%. Every voluntary discomfort proves to yourself you can handle hard things. That proof compounds.</p><p><strong>Levels:</strong> (1) Cold showers, 30s to 2min. (2) Skip a meal, then try 24h. (3) One full day without phone. (4) Hard physical challenge.</p><p><strong>Start here:</strong> end every shower with 30 seconds of cold water for 7 days.</p>"},
+{n:"04",t:"The Sleep Technique",sub:"Reprogram your subconscious in 5 minutes",tags:["self-belief","power"],body:"<p>Joseph Murphy: the drowsy state before sleep (hypnagogia) is the most powerful reprogramming window. <strong>Your conscious guard drops; suggestions slip directly into the subconscious.</strong></p><blockquote>\"Never go to sleep without a request to your subconscious.\" &mdash; Thomas Edison</blockquote><p>Sleep-dependent memory research: <strong>information processed just before sleep is preferentially consolidated overnight.</strong> Your brain prioritizes the last input.</p><p><strong>The Protocol:</strong> condense your desired outcome into one short phrase. Repeat slowly as you drift off. Feel it being true. Every night, 30 days minimum.</p><p><strong>Start here:</strong> phone across the room 10 min before bed. One phrase. Let it be your last thought.</p>"},
+{n:"05",t:"Amor Fati: Love Your Fate",sub:"Turn suffering into fuel",tags:["stoic","feeling-low"],body:"<p>Nietzsche's Amor Fati: <strong>love everything that happens, including the pain, because it is the raw material from which you are forged.</strong></p><blockquote>\"A blazing fire makes flame and brightness out of everything thrown into it.\" &mdash; Marcus Aurelius</blockquote><p>Not toxic positivity. Once something has happened, the only productive relationship: extract every lesson, use it as fuel, move forward stronger.</p><p>Jobs fired from Apple. Oprah fired from TV. Ali stripped of his title for 3 years. The event didn't change. Their relationship to it did.</p><p><strong>Start here:</strong> biggest recent setback, write: (1) What happened. (2) What it taught. (3) How it made you stronger.</p>"},
+{n:"06",t:"The Arena Mentality",sub:"Only the doer matters",tags:["courage","motivation"],body:"<p>Roosevelt, 1910:</p><blockquote>\"It is not the critic who counts. The credit belongs to the man who is actually in the arena, whose face is marred by dust and sweat and blood.\" &mdash; Theodore Roosevelt</blockquote><p>The moment you build something real, criticism comes. From people who haven't built anything. From people who tried and quit. The criticism says nothing about your work.</p><p>Ali: before every fight, everyone said he'd lose. He didn't waste energy on critics. He trained, visualized, and stepped in.</p><p><strong>Start here:</strong> write who you've been avoiding action because of. Name them. Are any of them in the arena? If not, step in.</p>"},
+{n:"07",t:"The Illusion of Arrival",sub:"Why 'getting there' never satisfies",tags:["mindset","gratitude"],body:"<p>\"When I hit X revenue, I'll be happy.\" <strong>This is the arrival fallacy.</strong> Hedonic adaptation: humans return to baseline happiness within 6-12 months of any major positive change.</p><blockquote>\"There is no path to happiness: happiness is the path.\" &mdash; Buddha</blockquote><p>Marcus Aurelius, the most powerful man in the world, still journaled about finding peace in the present. Power didn't deliver it. The practice of being present delivered it.</p><p>Attach identity to the practice, not the outcome. \"I build excellent things\" beats \"I will be someone when I build X.\"</p><p><strong>Start here:</strong> biggest goal, write: \"Even if I never achieve this, what about the daily work makes me come alive?\" If nothing: wrong goal.</p>"},
+{n:"08",t:"The Monk and the Warrior",sub:"Why you need both stillness and ferocity",tags:["discipline","power"],body:"<p>Musashi: greatest swordsman in history, also a calligrapher, painter, philosopher. Marcus Aurelius: led armies by day, journaled philosophy by night.</p><blockquote>\"Better to be a warrior in a garden than a gardener in a war.\" &mdash; Miyamoto Musashi</blockquote><p>The warrior without stillness: reckless, burned out. The monk without fierceness: passive, irrelevant. <strong>The integration is the superpower.</strong></p><p>Bruce Lee: explosive physical power plus deep philosophical contemplation. More philosophy books than martial arts manuals.</p><p><strong>Start here:</strong> 10 minutes of complete stillness every morning before work. No phone. No input. Then attack the day.</p>"},
+{n:"09",t:"Burn the Boats",sub:"The psychology of total commitment",tags:["courage","motivation"],body:"<p>1519: Cort&eacute;s landed in Mexico with 600 men. First order: <strong>burn the ships.</strong> No retreat. Only forward.</p><blockquote>\"If you want to take the island, burn the boats.\"</blockquote><p>Research on commitment devices: <strong>people who eliminate fallback options perform 30-40% better.</strong> The safety net costs you your full intensity.</p><p>Ali told the world he'd beat Liston. Not \"I'll try.\" \"I am the greatest.\" That public declaration burned his boats.</p><p><strong>Start here:</strong> identify one area where a safety net is diluting your intensity. What would removing it look like?</p>"},
+{n:"10",t:"The 5 AM Philosophy",sub:"Whoever controls the first hour controls the day",tags:["discipline","mindset"],body:"<p>Not about the time. About the principle: <strong>whoever controls the first hour controls the day.</strong> Most people start in reaction mode: emails, notifications, other people's agendas.</p><blockquote>\"When you arise in the morning, think of what a precious privilege it is to be alive.\" &mdash; Marcus Aurelius</blockquote><p>Cortisol peaks in the first 30-60 minutes after waking. <strong>Your highest-leverage cognitive window.</strong> Using it for email is a Ferrari going grocery shopping.</p><p><strong>Protocol:</strong> wake up, no phone for 60 min. 10 min stillness, 10 min movement, 40 min highest-priority creative work. By 7 AM, you've won.</p><p><strong>Start here:</strong> alarm 30 min earlier. Phone in another room overnight.</p>"},
+{n:"11",t:"Strategic Patience",sub:"The best moves often require waiting",tags:["strategy","power"],body:"<p>Sun Tzu: \"He will win who knows when to fight and when not to fight.\" <strong>Most people lose not from lack of ability, but acting too soon.</strong></p><blockquote>\"The two most powerful warriors are patience and time.\" &mdash; Leo Tolstoy</blockquote><p>Strategic patience is not passivity. It's active waiting: preparing, positioning, gathering intelligence. Just not pulling the trigger until conditions are right.</p><p>Buffett: \"waiting for the fat pitch.\" You don't swing at every ball. <strong>The discipline is in the waiting.</strong></p><p><strong>Start here:</strong> one decision you're rushing from anxiety, not urgency. Give it 72 hours. If it still feels right after zero pressure: act.</p>"},
+{n:"12",t:"Identity Over Goals",sub:"Who you become matters more than what you achieve",tags:["self-belief","mindset"],body:"<p>James Clear: <strong>\"Every action is a vote for the type of person you wish to become.\"</strong> Goals give direction, but identity drives behavior.</p><blockquote>\"First say to yourself what you would be; and then do what you have to do.\" &mdash; Epictetus</blockquote><p>Ali didn't have a \"goal to win.\" He was the champion in his own mind years before the belt. Identity first. Evidence followed.</p><p>Every early morning workout: vote for \"I am disciplined.\" Every shipped project: vote for \"I am a builder.\"</p><p><strong>Start here:</strong> write the identity of the person you want to be in 3 years. Not what they have, who they are. One daily action that casts a vote. Do it today.</p>"}
+];
+
+var LAWS=[
+{n:1,t:"Never Outshine the Master",sub:"Make those above you feel comfortably superior",d:"Always make those above you feel superior. Displaying talents too eagerly inspires fear and insecurity, not admiration.",use:"When working with superiors, mentors, or clients. Demonstrate competence without threatening ego. Let them take credit publicly.",avoid:"When you've surpassed the master and staying small would cripple you. Once you have your own platform, this law expires.",act:"This week, in every interaction with someone senior, make them feel their guidance shaped your success."},
+{n:2,t:"Use Selective Honesty to Disarm",sub:"One sincere move covers dozens of dishonest ones",d:"Open-hearted honesty, especially when unexpected, makes people emotional and creates disproportionate trust.",use:"Building trust with new clients or partners. Lead with genuine vulnerability on a non-critical matter.",avoid:"When the honesty would harm someone unnecessarily, or when you're vulnerable enough it could be weaponized.",act:"In your next pitch, lead with something candidly honest about a limitation. Watch the dynamic shift."},
+{n:3,t:"Conceal Your Intentions",sub:"Keep people off balance",d:"If they have no clue what you're up to, they cannot prepare a defense. Announce moves only after they're made.",use:"Negotiating deals, launching ventures, competing. Talk about a goal only after you've achieved it.",avoid:"With genuine allies and people you trust deeply. Concealment in close relationships breeds paranoia.",act:"Stop talking about one goal for 30 days. Work in silence. Notice how the absence of external validation changes your focus."},
+{n:4,t:"Always Say Less Than Necessary",sub:"The more you say, the more common you appear",d:"By saying less, you appear more in control. Silence creates pressure that works in your favor.",use:"Negotiations, meetings, tense conversations. Make your point, stop. The one who speaks first after a silence usually concedes.",avoid:"When someone is in genuine emotional distress. Stoic silence in the face of real pain is cruelty.",act:"Next meeting: make your point in half the words. Stop. Count to 10 silently. Let the other person fill the void."},
+{n:5,t:"Guard Your Reputation With Your Life",sub:"Reputation is the cornerstone of power",d:"Through reputation alone you can intimidate and win. Once it slips, you are vulnerable. Make it unassailable.",use:"Always. Your reputation enters a room before you do. One flagship project is worth more than 20 mediocre ones.",avoid:"Don't sacrifice integrity to protect reputation. If they conflict, choose character. Reputation without character is a house of cards.",act:"Google yourself. Audit your digital presence. Fix the top 3 things that don't match who you're building."},
+{n:6,t:"Court Attention at All Costs",sub:"What is unseen counts for nothing",d:"Never get lost in the crowd. Make yourself a magnet of attention by appearing larger, more colorful, more mysterious.",use:"Launching, growing a brand, entering a new market. Be bold enough to be noticed.",avoid:"When you need to operate quietly to execute. Attention without substance creates backlash. Build the product first.",act:"Create one piece of content this week bolder than anything you've posted before. Take a stand."},
+{n:7,t:"Make Other People Come to You",sub:"Use bait if necessary",d:"It is always better to make your opponent come to you, abandoning their own plans in the process.",use:"In sales: position yourself as the prize. Create content, build proof, let them come. The person who reaches out first has less leverage.",avoid:"When speed matters more than leverage. Don't confuse patience with passivity.",act:"Identify one person you've been chasing. Stop. Post something that catches their attention organically."},
+{n:8,t:"Win Through Actions, Never Argument",sub:"Any triumph through argument is Pyrrhic",d:"Resentment lasts longer than any change of opinion. It is much more powerful to agree with actions.",use:"When someone doubts you. Don't defend with words. Deliver results that make the point undeniable.",avoid:"When a genuine misunderstanding needs clearing quickly. Sometimes a 2-minute conversation saves weeks.",act:"Think of one person who doubts you. Identify one action that would make your point. Do it this week."},
+{n:9,t:"Plan All the Way to the End",sub:"The ending is everything",d:"By planning to the end you won't be overwhelmed. Work backward from the ideal outcome.",use:"Before starting any project or negotiation. What does the final deliverable look like? Start there.",avoid:"Don't plan so far ahead you never start. Analysis paralysis kills more businesses than bad plans.",act:"Current top priority: write one paragraph describing the perfect end result. Work backward. That's your roadmap."},
+{n:10,t:"Avoid the Unhappy and Unlucky",sub:"You can die from someone else's misery",d:"Emotional states are infectious. Associate with the happy and fortunate. The chronically negative will drag you into their vortex.",use:"Choosing partners, collaborators, friends. Your mindset is the average of your 5 closest people. Audit ruthlessly.",avoid:"Don't abandon someone in a temporary crisis. This applies to chronically negative patterns, not a friend having a hard week.",act:"List your top 5 people. Rate each 1-10 on energy. Below 5: reduce exposure. Above 8: increase time."},
+{n:11,t:"Learn to Keep People Dependent",sub:"Make others need you",d:"The more relied on, the more freedom you have. Make people depend on you for happiness and prosperity.",use:"Business: become the person with the key skill or key relationship. Don't be easily replaceable. Specialize deeply.",avoid:"Don't create artificial dependency through manipulation. Build genuine, irreplaceable value. That's sustainable.",act:"Your most replaceable skill vs. your least replaceable. Double down on the latter. That's your moat."},
+{n:12,t:"Use Absence to Increase Respect",sub:"Too much circulation makes the price go down",d:"If already established, temporary withdrawal makes you more talked about. Scarcity creates value.",use:"After a big win or intense output. Pull back. Let the work breathe.",avoid:"When you're just starting and nobody knows you. Can't use absence before establishing presence.",act:"Pick one platform you're over-present in. Go quiet for a week. Observe the engagement when you return."},
+{n:13,t:"Crush Your Enemy Totally",sub:"A feared enemy must be crushed entirely",d:"If one ember is left alight, a fire will eventually break out. More is lost through stopping halfway.",use:"Competition: don't leave it half-handled. Finish the project, lock in the client, deliver so well there's no room.",avoid:"Personal relationships. This is competitive strategy, not a life philosophy.",act:"One business threat you've been half-addressing. Either eliminate it completely or stop worrying. The middle ground is where energy dies."},
+{n:14,t:"Pose as a Friend, Work as a Spy",sub:"Learn the art of probing",d:"Use polite conversation to probe for weaknesses, intentions, information they'd never willingly share.",use:"Business intelligence, discovery calls. Ask open-ended questions. Let people talk. They reveal everything when heard.",avoid:"With people you genuinely love and trust.",act:"Next discovery call: three curious questions, then 2 minutes of silence. Note what they reveal."},
+{n:15,t:"Master Your Emotions",sub:"An emotional response is the greatest barrier to power",d:"If you control what you feel, you control what you project, and therefore control what others feel.",use:"Every high-stakes moment. Pause. Breathe. Respond from strategy, not impulse. The calm person has the most power.",avoid:"Don't suppress emotions permanently. Process them privately. Regulation, not deadness.",act:"Next time anger or anxiety rises: inhale for 5 counts before responding. Just this delay changes everything."},
+{n:16,t:"Make Accomplishments Seem Effortless",sub:"Conceal the toil, reveal only results",d:"Actions must seem natural and easy. All toil must be concealed. Act effortlessly, as if you could do much more.",use:"Presentations, portfolio, client delivery. Never show behind-the-scenes chaos. The product should look inevitable.",avoid:"When teaching or mentoring. Show the struggle so they know it's normal.",act:"Revisit your portfolio. Remove 'challenges faced' language. Rewrite to emphasize elegant outcomes."},
+{n:17,t:"Think as You Like, Behave Like Others",sub:"Flaunting unconventional ideas makes you a target",d:"Blend in publicly. Nurture radical ideas privately. Share them only when you have the power to withstand backlash.",use:"Building power in a traditional environment. Don't alienate gatekeepers before passing through the gate.",avoid:"When conformity would compromise core ethics. Some hills are worth dying on.",act:"One unconventional opinion you've been broadcasting loudly. Keep it private for 2 weeks while acting on it quietly."},
+{n:18,t:"Do Not Build Fortresses",sub:"Isolation is dangerous",d:"A fortress seems safe, but isolation exposes you to more dangers than it protects from. Stay in circulation.",use:"When you notice yourself retreating, avoiding networking, turning down calls. Force yourself back. Relationships are oxygen.",avoid:"Don't confuse strategic solitude with isolation. Deep work requires focus. This applies to chronic avoidance.",act:"Reach out to one person you haven't spoken to in 6+ months. No agenda. Just reconnect."},
+{n:19,t:"Concentrate Your Forces",sub:"Intensity defeats extensity every time",d:"Find a rich mine and mine it deeper, rather than flitting from one shallow mine to another.",use:"Pick one niche, one offer, one platform, and go deep. Specialist beats generalist.",avoid:"When the mine is genuinely exhausted. Pivoting is valid with data. But most pivot from boredom, not necessity.",act:"List everything you're working on. Circle top 2 that generate 80% of results. Eliminate or delegate 2 others."},
+{n:20,t:"Always Be Willing to Walk Away",sub:"The person who cares less has the most power",d:"In every negotiation, the person willing to walk away has leverage. Attachment to outcome kills negotiating power.",use:"Pricing conversations, client negotiations, partnerships. Set your floor. If they cross it, leave.",avoid:"Don't use this as emotional manipulation in personal relationships. Business strategy, not cruelty.",act:"Before your next negotiation, define your walk-away point on paper. If they cross it, leave. Writing makes it real."}
+];
+
+var activeThemes={};
+var S={};
+try{S=JSON.parse(SAFE.get('mf3')||'{}');}catch(e){S={};}
+if(!S.mood)S.mood='dark';if(!S.bf)S.bf='grotesk';if(!S.hf)S.hf='instrument';if(!S.sz)S.sz='md';
+function saveS(){SAFE.set('mf3',JSON.stringify(S));}
+
+function applyTheme(){
+  document.documentElement.setAttribute('data-mood',S.mood);
+  var bf=BF.filter(function(f){return f.id===S.bf;})[0];
+  var hf=HF.filter(function(f){return f.id===S.hf;})[0];
+  var sz=SZ.filter(function(s){return s.id===S.sz;})[0];
+  document.documentElement.style.setProperty('--body-font',bf?bf.css:BF[0].css);
+  document.documentElement.style.setProperty('--heading-font',hf?hf.css:HF[0].css);
+  document.documentElement.style.fontSize=(sz?sz.m:1)*100+'%';
+}
+
+function fmtDate(){return new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});}
+function dayOfYear(){var n=new Date(),s=new Date(n.getFullYear(),0,0);return Math.floor((n-s)/864e5);}
+
+function setHeroQuote(rand){
+  var i=rand?Math.floor(Math.random()*Q.length):dayOfYear()%Q.length;
+  var q=Q[i];
+  document.getElementById('hero-quote').textContent='"'+q.q+'"';
+  document.getElementById('hero-author').textContent=q.a;
+  document.getElementById('hero-source').textContent=q.s||'';
+  document.getElementById('hero-tags').innerHTML=q.t.map(function(t){return '<span class="hero-tag">'+(TH[t]||t)+'</span>';}).join('');
+}
+
+function showHero(){
+  var secs=document.querySelectorAll('.section');
+  for(var i=0;i<secs.length;i++)secs[i].classList.remove('active');
+  document.getElementById('hero').style.display='';
+  setNav('home');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showSection(id){
+  document.getElementById('hero').style.display='none';
+  var secs=document.querySelectorAll('.section');
+  for(var i=0;i<secs.length;i++)secs[i].classList.remove('active');
+  document.getElementById('sec-'+id).classList.add('active');
+  setNav(id);
+  window.scrollTo({top:0});
+}
+function setNav(id){
+  var btns=document.querySelectorAll('.bnav-btn');
+  for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');
+  var b=document.querySelector('[data-nav="'+id+'"]');
+  if(b)b.classList.add('active');
+}
+
+function renderChips(){
+  var c=document.getElementById('filter-chips');
+  var counts={};for(var k in TH)counts[k]=0;
+  Q.forEach(function(q){q.t.forEach(function(t){if(counts[t]!==undefined)counts[t]++;});});
+  var html='';for(var key in TH){html+='<button class="chip" data-theme="'+key+'">'+TH[key]+'<span class="chip-count">'+counts[key]+'</span></button>';}
+  c.innerHTML=html;
+  var chips=c.querySelectorAll('.chip');
+  for(var i=0;i<chips.length;i++){
+    chips[i].addEventListener('click',function(){
+      var t=this.dataset.theme;
+      if(activeThemes[t])delete activeThemes[t];else activeThemes[t]=true;
+      this.classList.toggle('active');
+      renderQuotes();
+    });
+  }
+}
+function renderQuotes(){
+  var g=document.getElementById('qgrid'),ct=document.getElementById('qcount');
+  var keys=Object.keys(activeThemes);
+  var f=keys.length?Q.filter(function(q){return q.t.some(function(t){return activeThemes[t];});}):Q;
+  ct.textContent=f.length+' quotes'+(keys.length?' matching':'');
+  g.innerHTML=f.length?f.map(function(q){return '<div class="qc"><div class="qc-text">"'+q.q+'"</div><div class="qc-author">'+q.a+(q.s?'<span class="qc-src">'+q.s+'</span>':'')+'</div><div class="qc-tags">'+q.t.map(function(t){return '<span class="qt">'+(TH[t]||t)+'</span>';}).join('')+'</div></div>';}).join(''):'<div style="text-align:center;padding:40px;color:var(--ink-light);">No quotes match. Try different themes.</div>';
+}
+
+function getUnlocked(){return Math.min(6+Math.floor(dayOfYear()/3),ESSAYS.length);}
+function renderEssays(){
+  var u=getUnlocked(),nd=3-(dayOfYear()%3);
+  document.getElementById('eu-text').innerHTML='<strong>'+u+'</strong> / '+ESSAYS.length+' unlocked';
+  document.getElementById('eu-next').textContent=u<ESSAYS.length?'Next in '+nd+'d':'All unlocked';
+  var c=document.getElementById('essays-box');
+  c.innerHTML=ESSAYS.map(function(e,i){
+    if(i>=u)return '<div class="ec" style="opacity:0.35;pointer-events:none;"><div class="ec-head"><div><div class="ec-num">Essay '+e.n+'</div><div class="ec-title">'+e.t+'</div><div class="ec-sub">'+e.sub+'</div><div class="ec-lock">Unlocks in '+((i-u+1)*3)+' days</div></div></div></div>';
+    var isNew=(i===u-1&&u>6);
+    var tags=e.tags.map(function(t){return '<span class="qt">'+(TH[t]||t)+'</span>';}).join('');
+    return '<div class="ec" data-idx="'+i+'"><div class="ec-head"><div><div class="ec-num">Essay '+e.n+(isNew?'<span class="ec-new">New</span>':'')+'</div><div class="ec-title">'+e.t+'</div><div class="ec-sub">'+e.sub+'</div><div class="ec-tags" style="margin-top:6px;">'+tags+'</div></div><button class="ec-toggle">+</button></div><div class="ec-body"><div class="ec-content">'+e.body+'</div></div></div>';
+  }).join('');
+  var cards=c.querySelectorAll('.ec[data-idx]');
+  for(var i=0;i<cards.length;i++){
+    cards[i].addEventListener('click',function(ev){
+      if(ev.target.closest('.ec-toggle')||!this.classList.contains('expanded'))this.classList.toggle('expanded');
+    });
+  }
+}
+
+function renderLaws(){
+  document.getElementById('laws-box').innerHTML=LAWS.map(function(l){return '<div class="lc"><div class="lc-num">'+l.n+'</div><div><div class="lc-title">'+l.t+'</div><div class="lc-sub">'+l.sub+'</div><div class="lc-desc">'+l.d+'</div><div class="lc-when"><div class="lc-box use"><div class="lc-box-label">When to Use</div>'+l.use+'</div><div class="lc-box avoid"><div class="lc-box-label">When to Avoid</div>'+l.avoid+'</div></div><div class="lc-action"><div class="lc-action-label">Action Step</div>'+l.act+'</div></div></div>';}).join('');
+}
+
+function renderSettings(){
+  document.getElementById('sg-mood').innerHTML=MOODS.map(function(m){return '<div class="sopt'+(S.mood===m.id?' active':'')+'" data-mood="'+m.id+'"><div class="mood-dot" style="background:'+m.dot+';"></div><div class="sopt-name">'+m.name+'</div></div>';}).join('');
+  document.getElementById('sg-body').innerHTML=BF.map(function(f){return '<div class="sopt'+(S.bf===f.id?' active':'')+'" data-bf="'+f.id+'"><div class="sopt-name" style="font-family:'+f.css+';">'+f.name+'</div><div class="sopt-preview" style="font-family:'+f.css+';">Aa Bb 123</div></div>';}).join('');
+  document.getElementById('sg-head').innerHTML=HF.map(function(f){return '<div class="sopt'+(S.hf===f.id?' active':'')+'" data-hf="'+f.id+'"><div class="sopt-name" style="font-family:'+f.css+';">'+f.name+'</div><div class="sopt-preview" style="font-family:'+f.css+';font-style:italic;">"Strength"</div></div>';}).join('');
+  document.getElementById('sg-size').innerHTML=SZ.map(function(s){return '<div class="sopt'+(S.sz===s.id?' active':'')+'" data-sz="'+s.id+'"><div class="sopt-name">'+s.name+'</div></div>';}).join('');
+  bindSetting('[data-mood]','mood');bindSetting('[data-bf]','bf');bindSetting('[data-hf]','hf');bindSetting('[data-sz]','sz');
+}
+function bindSetting(sel,key){
+  var els=document.querySelectorAll('#settings-overlay '+sel);
+  for(var i=0;i<els.length;i++){
+    els[i].addEventListener('click',function(){
+      S[key]=this.getAttribute('data-'+key);
+      saveS();applyTheme();renderSettings();
+    });
+  }
+}
+
+function init(){
+  applyTheme();
+  document.getElementById('hero-date').textContent=fmtDate();
+  setHeroQuote(false);
+  document.getElementById('hero-refresh').addEventListener('click',function(){setHeroQuote(true);});
+  renderChips();renderQuotes();renderEssays();renderLaws();renderSettings();
+
+  var navs=document.querySelectorAll('.bnav-btn');
+  for(var i=0;i<navs.length;i++){
+    navs[i].addEventListener('click',function(){
+      var nav=this.dataset.nav;
+      if(nav==='home')showHero();
+      else if(nav==='settings')document.getElementById('settings-overlay').classList.add('open');
+      else showSection(nav);
+    });
+  }
+  document.getElementById('back-quotes').addEventListener('click',showHero);
+  document.getElementById('back-essays').addEventListener('click',showHero);
+  document.getElementById('back-laws').addEventListener('click',showHero);
+
+  var ov=document.getElementById('settings-overlay');
+  ov.addEventListener('click',function(ev){if(ev.target===ov)ov.classList.remove('open');});
+}
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+else init();
+</script>
+</body>
+</html>

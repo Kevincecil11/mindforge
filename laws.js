@@ -52,19 +52,21 @@
 {n:48,t:"Assume Formlessness",sub:"Be fluid; adapt faster than they can pin you",d:"Fixed form makes you a target. Stay fluid, adaptable, and in motion, and no attack can find a shape to strike.",use:"In fast-changing markets where rigidity gets punished.",avoid:"Formlessness is not aimlessness. Adapt around a stable core purpose.",act:"Name one rigid process. Rebuild it to flex with changing conditions."}
   ];
 
-  var UNIVERSAL = [
-{n:1,t:"The Law of Divine Oneness",sub:"Everything is connected",d:"Everything and everyone is interconnected. What you think, say, and do ripples outward and touches the whole.",use:"Treat every action as if it touches the larger web, because it does.",avoid:"Do not use oneness to erase responsibility for your specific choices.",act:"Do one small thing today as if the whole world could feel it."},
-{n:2,t:"The Law of Vibration",sub:"Everything is in constant motion",d:"Everything vibrates at its own frequency, down to your thoughts and emotions. Nothing truly rests.",use:"Raise your state deliberately; your frequency shapes what you attract and notice.",avoid:"This is about your inner state, not a substitute for real action.",act:"Notice your energy right now. Shift it up one notch on purpose."},
-{n:3,t:"The Law of Correspondence",sub:"As above, so below",d:"Your outer life mirrors your inner world. External reality reflects your dominant inner patterns.",use:"When life feels chaotic, look inward for the pattern first.",avoid:"Do not use it to blame yourself for everything outside your control.",act:"Pick one outer frustration. Ask what inner pattern it mirrors."},
-{n:4,t:"The Law of Attraction",sub:"Like attracts like",d:"You draw toward you what matches your dominant thoughts, feelings, and energy, positive or negative.",use:"Hold a clear, felt image of what you want and act from it.",avoid:"Wishing without action is fantasy. Attraction pairs with effort.",act:"Write what you want in the present tense. Read it, feel it, then act."},
-{n:5,t:"The Law of Inspired Action",sub:"Thought must become movement",d:"Attraction only completes through action. You must take concrete steps toward what you seek, not merely visualize it.",use:"Turn every intention into one physical, do-it-now step.",avoid:"Do not wait for perfect inspiration. Motion creates it.",act:"Take one imperfect action toward a goal in the next hour."},
-{n:6,t:"The Law of Perpetual Transmutation of Energy",sub:"Energy always changes form",d:"Energy is always in motion and can be transformed. Higher energy transmutes lower, so your focus reshapes your reality.",use:"Redirect anger, fear, or restlessness into work and creation.",avoid:"Suppression is not transmutation. Channel the energy, do not bury it.",act:"Take one difficult emotion today and pour it into productive work."},
-{n:7,t:"The Law of Cause and Effect",sub:"Every action returns",d:"Nothing happens by chance. Every action sets consequences in motion that eventually return to you.",use:"Choose actions by the harvest you want to reap later.",avoid:"Do not expect instant returns. Causes ripen on their own schedule.",act:"Plant one deliberate good cause today with no expectation of quick reward."},
-{n:8,t:"The Law of Compensation",sub:"You reap what you sow",d:"You are compensated in kind for what you give: your effort, contribution, and generosity return as abundance.",use:"Give real value first; the compensation follows the contribution.",avoid:"Giving to manipulate a return poisons the exchange.",act:"Overdeliver on one thing this week without asking for anything back."},
-{n:9,t:"The Law of Relativity",sub:"Nothing is good or bad until compared",d:"Everything is neutral until you compare it. Your challenges carry only the weight and meaning you assign them.",use:"Reframe a hardship by comparing it to something far worse.",avoid:"Do not use comparison to minimize a real problem into denial.",act:"Take one current struggle and place it beside a harder one. Feel the shift."},
-{n:10,t:"The Law of Polarity",sub:"Everything has an opposite",d:"All things have two poles. Cold is degrees of hot; despair holds the seed of hope. Opposites are the same thing in degree.",use:"In any low, deliberately locate the opposite pole and move toward it.",avoid:"Do not deny the painful pole. Acknowledge it, then choose the other.",act:"Name one bad situation, then name its hidden opposite. Aim for it."},
-{n:11,t:"The Law of Rhythm",sub:"Everything moves in cycles",d:"Everything flows in tides and rhythms: seasons, moods, momentum. Down cycles are natural and always turn.",use:"Ride high tides hard; rest and prepare during the low ones.",avoid:"Do not mistake a down cycle for a permanent state. It passes.",act:"Identify which cycle you are in now. Match your effort to it."},
-{n:12,t:"The Law of Gender",sub:"Creation needs both energies",d:"Everything holds masculine and feminine energies: action and receptivity, output and rest. Both are needed to create.",use:"Balance bold action with patience and gestation in your work.",avoid:"Do not force all-action all the time. Ideas need incubation too.",act:"Pair one bold push this week with real, guilt-free rest."}
+  var LIFE = [
+{n:1,t:"The Pareto Principle",sub:"80% of results come from 20% of effort",d:"Roughly 80 percent of outcomes flow from about 20 percent of causes. A small set of tasks, clients, and habits quietly drives the vast majority of your results.",use:"Audit your work for the vital few tasks and relationships that create most of the value, then pour your energy there.",avoid:"The ratio is a rough guide, not a hard law. Do not use it to neglect essential but unglamorous work.",act:"List this week's tasks. Circle the two that create most of the value. Do those first."},
+{n:2,t:"Parkinson's Law",sub:"Work expands to fill the time you give it",d:"A task swells to consume whatever time you allow. Give yourself a week and it takes a week; give yourself an afternoon and it is somehow done by evening.",use:"Set tight, slightly uncomfortable deadlines to force focus and kill perfectionism.",avoid:"Do not cut time so hard that quality collapses or you burn out chasing artificial urgency.",act:"Take one task and halve the time you planned for it. Start now."},
+{n:3,t:"Eat the Frog",sub:"Do your hardest task first",d:"If the first thing you do each morning is your most important and most dreaded task, your 'frog', the rest of the day feels light and momentum carries you.",use:"Each morning, name the one task you are most tempted to avoid and do it before anything else.",avoid:"Do not let it become an excuse to schedule the impossible before you are even awake.",act:"Name tomorrow's frog tonight. Do it first thing, before email."},
+{n:4,t:"The Two-Minute Rule",sub:"If it takes under two minutes, do it now",d:"Any task that takes less than two minutes should be done the moment it appears rather than filed away. Small deferrals pile into overwhelming clutter.",use:"Quick replies, tidying, and tiny admin the instant they show up.",avoid:"Do not let an endless drip of two-minute tasks shatter your deep, focused work.",act:"For the next hour, finish every sub-two-minute task on sight instead of deferring it."},
+{n:5,t:"Murphy's Law",sub:"Anything that can go wrong, will",d:"If something has a way to fail, given enough time it eventually does. Not fate, but a reminder that plans and systems need slack and safeguards.",use:"When designing plans, build in buffers, backups, and contingencies at the failure points.",avoid:"Do not spiral into pessimism or paralysis. It is a prompt to prepare, not to fear everything.",act:"Pick one important plan. Name its most likely failure point and add one safeguard."},
+{n:6,t:"Hofstadter's Law",sub:"It always takes longer than you expect",d:"'It always takes longer than you expect, even when you account for Hofstadter's Law.' We underestimate time chronically, even after correcting for it.",use:"When estimating, add a generous buffer, then add more. Assume unknowns you cannot yet see.",avoid:"Do not use it as an excuse for endless slippage. Buffer, but still commit to a date.",act:"Take your next estimate and multiply it by 1.5. Plan around that number."},
+{n:7,t:"Hanlon's Razor",sub:"Do not assume malice where a mistake explains it",d:"Most harm from others is not a plot against you. Carelessness, haste, and simple error explain far more of the world than deliberate cruelty.",use:"When someone wrongs you, first assume a mistake, not an attack. It lowers stress and cools reactions.",avoid:"Do not use it to excuse repeated, clearly intentional harm. Patterns still matter.",act:"Recall one thing you took personally. Reframe it as a likely mistake and feel the shift."},
+{n:8,t:"Occam's Razor",sub:"The simplest explanation is usually right",d:"Faced with competing explanations, the one requiring the fewest assumptions is usually correct. Do not invent complexity where none is needed.",use:"Debugging problems, diagnosing conflicts, and deciding with limited information.",avoid:"Simplest is not always true. Do not flatten a genuinely complex situation.",act:"Take one problem worrying you. Write the simplest explanation and test that first."},
+{n:9,t:"The Dunning-Kruger Effect",sub:"The less you know, the more sure you feel",d:"Beginners often overrate their competence because they lack the knowledge to see their own gaps. True experts, seeing the depth, tend to underrate themselves.",use:"As a humility check whenever you feel certain in an unfamiliar area.",avoid:"Do not weaponize it to dismiss others. You are just as prone to it yourself.",act:"In a field you are new to, ask one expert what you are probably getting wrong."},
+{n:10,t:"The Peter Principle",sub:"People rise to their level of incompetence",d:"In hierarchies, people get promoted on current performance until they land in a role they are no longer good at, and then they stall there.",use:"When choosing roles or promotions, ask whether the new skills differ from the ones being rewarded.",avoid:"Do not brand every struggling manager incompetent. Training and support change the picture.",act:"For your next step up, list the new skills it demands and start building one now."},
+{n:11,t:"The Law of Diminishing Returns",sub:"More effort eventually yields less",d:"Past a certain point, each extra unit of effort produces a smaller gain. The tenth hour rarely matches the first, and the polish rarely matches the draft.",use:"To recognize when good enough truly is enough and it is time to ship.",avoid:"Do not stop too early on things that genuinely compound, like skill and relationships.",act:"Find one task you are over-polishing. Decide the point of enough, then ship it."},
+{n:12,t:"The Compound Effect",sub:"Small actions repeated create huge results",d:"Tiny, consistent choices compound over time into outsized outcomes, for better or worse. The power is in repetition, not intensity.",use:"Building habits. Focus on showing up daily rather than on dramatic one-off bursts.",avoid:"Do not expect visible results early. The curve stays flat long before it bends upward.",act:"Choose one 1 percent habit. Commit to it daily for 30 days, however small."},
+{n:13,t:"The Sunk Cost Fallacy",sub:"Do not throw good resources after bad",d:"We cling to failing efforts because of what we have already invested. Past costs are gone. Only future value should guide the decision ahead.",use:"When deciding whether to continue anything, weigh the future, not the spent past.",avoid:"Do not use it to quit at the first difficulty. Tell a dead end apart from a hard middle.",act:"Name one thing you continue only because you already invested in it. Reassess honestly."},
+{n:14,t:"The Law of the Instrument",sub:"To a hammer, everything looks like a nail",d:"Over-rely on one familiar tool or method and you start forcing it onto every problem, even the ones it does not fit.",use:"When facing a new problem, deliberately ask what tool fits, not what tool you already know.",avoid:"Do not abandon a genuinely strong core skill just to appear versatile.",act:"Take a current problem. List two approaches from outside your usual toolkit."}
   ];
 
   function applyPower() {
@@ -80,44 +82,74 @@
     return '<div class="lc"><div class="lc-num">' + l.n + '</div><div><div class="lc-title">' + l.t + '</div><div class="lc-sub">' + l.sub + '</div><div class="lc-desc">' + l.d + '</div><div class="lc-when"><div class="lc-box use"><div class="lc-box-label">' + useLabel + '</div>' + l.use + '</div><div class="lc-box avoid"><div class="lc-box-label">' + avoidLabel + '</div>' + l.avoid + '</div></div><div class="lc-action"><div class="lc-action-label">Action Step</div>' + l.act + '</div></div></div>';
   }
 
-  function renderUniversal() {
-    var box = document.getElementById('universal-box');
+  function renderLife() {
+    var box = document.getElementById('life-box');
     if (!box) return;
-    box.innerHTML = UNIVERSAL.map(function (l) { return lawCard(l, 'In Practice', 'Common Misread'); }).join('');
+    box.innerHTML = LIFE.map(function (l) { return lawCard(l, 'In Practice', 'Watch For'); }).join('');
   }
 
-  function showUniversal() {
+  function showLife() {
     document.getElementById('hero').style.display = 'none';
     var sections = document.querySelectorAll('.section');
     for (var i = 0; i < sections.length; i++) sections[i].classList.remove('active');
-    document.getElementById('sec-universal').classList.add('active');
-    if (typeof setNav === 'function') setNav('universal');
-    renderUniversal();
+    document.getElementById('sec-life').classList.add('active');
+    if (typeof setNav === 'function') setNav('life');
+    renderLife();
     window.scrollTo({ top: 0 });
   }
 
-  function injectUniversal() {
-    if (document.getElementById('sec-universal')) return;
+  function injectLife() {
+    if (document.getElementById('sec-life')) return;
     var section = document.createElement('div');
     section.className = 'section';
-    section.id = 'sec-universal';
-    section.innerHTML = '<div class="section-top"><button class="back-btn" id="back-universal">\u2190 Back</button><div class="section-title">Universal Laws</div><div class="section-sub">Timeless laws of life and reality</div></div><div id="universal-box"></div>';
+    section.id = 'sec-life';
+    section.innerHTML = '<div class="section-top"><button class="back-btn" id="back-life">Back</button><div class="section-title">Life Laws</div><div class="section-sub">Mental models and principles for work and life</div></div><div id="life-box"></div>';
     document.getElementById('bottom-nav').insertAdjacentElement('beforebegin', section);
 
     var nav = document.createElement('button');
     nav.className = 'bnav-btn';
-    nav.setAttribute('data-nav', 'universal');
-    nav.innerHTML = '<span class="bnav-icon">\u2726</span>Universe';
+    nav.setAttribute('data-nav', 'life');
+    nav.innerHTML = '<span class="bnav-icon"></span>Life';
     var settings = document.querySelector('[data-nav="settings"]');
     settings.parentNode.insertBefore(nav, settings);
-    nav.addEventListener('click', showUniversal);
-    document.getElementById('back-universal').addEventListener('click', showHero);
-    renderUniversal();
+    nav.addEventListener('click', showLife);
+    document.getElementById('back-life').addEventListener('click', showHero);
+    renderLife();
+  }
+
+  var ICONS = {
+    home: '<path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/>',
+    quotes: '<path d="M8 6C5.8 6 4 7.8 4 10s1.8 4 4 4c0 2-1.4 3.4-3 4"/><path d="M18 6c-2.2 0-4 1.8-4 4s1.8 4 4 4c0 2-1.4 3.4-3 4"/>',
+    essays: '<path d="M12 6C10 4.6 6.6 4.6 4 5.2V18c2.6-.6 6-.6 8 1 2-1.6 5.4-1.6 8-1V5.2C17.4 4.6 14 4.6 12 6z"/><path d="M12 6v13"/>',
+    laws: '<path d="M13 3 4 14h6l-1 7 9-11h-6z"/>',
+    life: '<circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1z"/>',
+    bookmarks: '<path d="M6 4h12v16l-6-4-6 4z"/>',
+    settings: '<path d="M4 7h9"/><path d="M17 7h3"/><circle cx="15" cy="7" r="2"/><path d="M4 17h3"/><path d="M11 17h9"/><circle cx="9" cy="17" r="2"/>'
+  };
+  var LABELS = { home:'Today', quotes:'Quotes', essays:'Essays', laws:'Power', life:'Life', bookmarks:'Saved', settings:'Settings' };
+
+  function svg(paths) {
+    return '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + paths + '</svg>';
+  }
+
+  function polishNav() {
+    var style = document.createElement('style');
+    style.textContent = '.bottom-nav{overflow:visible;justify-content:space-between;gap:0;padding:8px 6px max(8px,env(safe-area-inset-bottom))}.bottom-nav::-webkit-scrollbar{display:none}.bnav-btn{flex:1 1 0;min-width:0;padding:6px 2px;gap:5px}.bnav-btn .bnav-icon{font-size:0;line-height:0;display:flex;align-items:center;justify-content:center}.bnav-btn .bnav-icon svg{display:block}.bnav-btn{font-size:0.58rem;letter-spacing:0.02em;text-transform:none;font-weight:600;color:var(--ink-light)}.bnav-btn.active{color:var(--accent)}.bnav-btn svg{transition:transform .18s cubic-bezier(.25,1,.5,1)}.bnav-btn.active svg{transform:translateY(-1px) scale(1.04)}@media(min-width:768px){.bottom-nav{max-width:600px;gap:4px}}';
+    document.head.appendChild(style);
+
+    var buttons = document.querySelectorAll('.bnav-btn');
+    for (var i = 0; i < buttons.length; i++) {
+      var nav = buttons[i].getAttribute('data-nav');
+      if (!ICONS[nav]) continue;
+      buttons[i].innerHTML = '<span class="bnav-icon">' + svg(ICONS[nav]) + '</span>' + (LABELS[nav] || '');
+    }
   }
 
   function setup() {
     applyPower();
-    injectUniversal();
+    injectLife();
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(polishNav);
+    else setTimeout(polishNav, 30);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup);

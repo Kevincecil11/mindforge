@@ -1,25 +1,28 @@
 /*
   Auth proxy
   ----------
-  Safari (and iOS browsers generally) refuse to send cookies on cross-site
-  requests. Neon's auth service lives on a different domain, so a session
-  created there is invisible to fetch() calls from our site — you sign in
-  successfully and the app still thinks you're a stranger.
+  iOS Safari refuses to send cookies on cross-site requests. Neon's auth
+  service lives on another domain, so a session created there is invisible
+  to our page: you sign in fine and the app still sees a stranger.
 
-  This function forwards /api/auth/* to the Neon auth service from the
-  server side and rewrites the Set-Cookie headers so the session cookie
-  belongs to OUR domain. Same origin, so the browser keeps it and sends it
-  back every time.
+  This route forwards /api/auth/* to Neon from the server side and does two
+  things so the session always survives:
 
-  Note: the base URL below is a public client endpoint, not a secret.
+    1. Rewrites Set-Cookie so the session cookie belongs to OUR domain
+       (first-party cookies are kept by every browser).
+    2. Hands the session back in an `x-mf-session` response header. The page
+       stores that in localStorage and returns it on later requests via the
+       `x-mf-session` request header, which this route replays upstream as a
+       Cookie. Works even when cookies are blocked outright.
+
+  The upstream base URL is a public client endpoint, not a secret.
 */
 
 const UPSTREAM =
   process.env.NEON_AUTH_BASE_URL ||
   'https://ep-bitter-fog-ae1yr8y3.neonauth.c-2.us-east-2.aws.neon.tech/neondb/auth';
 
-// Headers we should not blindly copy in either direction.
-const SKIP_REQUEST = ['host', 'connection', 'content-length', 'accept-encoding'];
+const SKIP_REQUEST = ['host', 'connection', 'content-length', 'accept-encoding', 'x-mf-session'];
 const SKIP_RESPONSE = ['content-encoding', 'content-length', 'transfer-encoding', 'connection'];
 
 function siteOrigin(req) {
@@ -29,12 +32,17 @@ function siteOrigin(req) {
   return `${proto}://${host}`;
 }
 
-// Strip Domain= so the cookie is scoped to this site instead of Neon's.
+// Drop Domain= so the cookie is scoped to this site rather than Neon's.
 function rewriteCookie(cookie) {
   return cookie
     .split(';')
     .filter((part) => !/^\s*domain=/i.test(part))
     .join(';');
+}
+
+// "name=value; Path=/; HttpOnly" -> "name=value"
+function pair(cookie) {
+  return cookie.split(';')[0].trim();
 }
 
 function readSetCookies(response) {
@@ -50,21 +58,25 @@ export default async function handler(req, res) {
     ? req.query.path
     : [req.query.path].filter(Boolean);
 
-  // Preserve any query string (?provider=... etc).
   const queryIndex = req.url.indexOf('?');
   const search = queryIndex === -1 ? '' : req.url.slice(queryIndex);
-
   const target = `${UPSTREAM}/${segments.join('/')}${search}`;
 
-  // Forward request headers, but present our own site as the Origin so the
-  // upstream CSRF check sees a trusted origin.
   const headers = {};
   for (const [key, value] of Object.entries(req.headers)) {
     if (SKIP_REQUEST.includes(key.toLowerCase())) continue;
     if (typeof value === 'string') headers[key] = value;
   }
+
+  // Present our own site as the Origin so the upstream CSRF check passes.
   headers.origin = siteOrigin(req);
   delete headers.referer;
+
+  // Replay a session the page is holding for us.
+  const carried = req.headers['x-mf-session'];
+  if (carried) {
+    headers.cookie = headers.cookie ? `${headers.cookie}; ${carried}` : carried;
+  }
 
   let body;
   if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -85,8 +97,18 @@ export default async function handler(req, res) {
       redirect: 'manual'
     });
 
-    const cookies = readSetCookies(upstream).map(rewriteCookie);
-    if (cookies.length) res.setHeader('Set-Cookie', cookies);
+    const cookies = readSetCookies(upstream);
+
+    if (cookies.length) {
+      res.setHeader('Set-Cookie', cookies.map(rewriteCookie));
+
+      // Give the page a copy it can hold itself.
+      const session = cookies
+        .map(pair)
+        .filter((c) => c && !/=(deleted|;|$)/i.test(c))
+        .join('; ');
+      if (session) res.setHeader('x-mf-session', session);
+    }
 
     upstream.headers.forEach((value, key) => {
       const lower = key.toLowerCase();

@@ -101,3 +101,10 @@
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
+
+/* Pull quotes / essays / laws from the database. See data.js. */
+(function () {
+  var s = document.createElement('script');
+  s.src = 'data.js';
+  document.body.appendChild(s);
+})();

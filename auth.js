@@ -1,18 +1,18 @@
 /*
   MindForge — authentication (Neon Managed Better Auth)
   ----------------------------------------------------
-  Everything goes through /api/auth/* on our own domain (see
-  api/auth/[...path].js). That proxy hands us the session in an
-  `x-mf-session` header; we keep it in localStorage and send it back on
-  every call. So the session survives even when the browser refuses to
-  keep cookies — which is exactly what iOS Safari does with Neon's domain.
+  IMPORTANT: this file does nothing unless a backend is present.
 
-  Flows offered:
-    - Create account / sign in with email + password  (reliable everywhere)
-    - Set or reset a password by email                (links a password to
-      an account that was created with Google)
-    - Continue with Google                            (great on desktop;
-      iOS may drop the session, and we say so plainly)
+  On GitHub Pages there is no /api, so signing in is impossible and showing
+  a login form would just be a lie. So the first thing we do is probe the
+  API. No backend -> remove the Account box and stop. On Vercel the probe
+  succeeds and the full flow below runs.
+
+  Session handling: everything goes through /api/auth/* on our own domain
+  (api/auth/[...path].js). That proxy returns the session in an
+  `x-mf-session` header, we keep it in localStorage and send it back on
+  every call — so the session survives browsers that refuse third-party
+  cookies, which is exactly what iOS Safari does.
 */
 (function () {
   'use strict';
@@ -24,7 +24,7 @@
   var SESSION_KEY = 'mf_session';
   var PENDING_KEY = 'mf_auth_pending';
 
-  var state = { user: null, busy: false, view: 'signin', checked: false };
+  var state = { user: null, busy: false, view: 'signin', checked: false, token: null };
 
   // ---------------------------------------------------------------- storage
 
@@ -71,6 +71,22 @@
 
   function quiet(promise) {
     return promise.catch(function () { return null; });
+  }
+
+  // Is there a backend at all? A static host answers 404 (or serves HTML).
+  function backendExists() {
+    return fetch(PROXY + '/get-session', {
+      method: 'GET',
+      credentials: 'include',
+      headers: { accept: 'application/json' }
+    })
+      .then(function (res) {
+        if (res.status === 404 || res.status === 405) return false;
+        var type = res.headers.get('content-type') || '';
+        if (type.indexOf('html') !== -1) return false;
+        return true;
+      })
+      .catch(function () { return false; });
   }
 
   function loadSession() {
@@ -139,6 +155,13 @@
     else panel.appendChild(el);
 
     return el;
+  }
+
+  function removeSection() {
+    var el = document.getElementById('mf-auth');
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+    var css = document.getElementById('mf-auth-css');
+    if (css && css.parentNode) css.parentNode.removeChild(css);
   }
 
   function message(text, kind) {
@@ -425,7 +448,7 @@
     }
   }
 
-  function start() {
+  function begin() {
     styles();
 
     state.token = findToken();
@@ -450,6 +473,14 @@
         return;
       }
       render();
+    });
+  }
+
+  function start() {
+    // No backend (GitHub Pages) -> make sure nothing auth-related is shown.
+    backendExists().then(function (available) {
+      if (!available) { removeSection(); return; }
+      begin();
     });
   }
 

@@ -19,6 +19,9 @@
   var API = '/api/content';
   var CACHE_KEY = 'mf_content_v1';
 
+  // Pretty names for themes that aren't in the original TH map in index.html.
+  var THEME_LABELS = { movies: 'Movies' };
+
   function count(name) {
     return (window[name] && window[name].length) || 0;
   }
@@ -29,6 +32,18 @@
     if (incoming.length < count(name)) return false;
     window[name] = incoming;
     return true;
+  }
+
+  // Any theme that shows up on a quote but has no filter chip yet gets one.
+  function registerThemes(quotes) {
+    if (typeof TH === 'undefined' || !quotes) return;
+    quotes.forEach(function (item) {
+      (item.t || []).forEach(function (theme) {
+        if (TH[theme]) return;
+        TH[theme] = THEME_LABELS[theme] ||
+          theme.charAt(0).toUpperCase() + theme.slice(1).replace(/-/g, ' ');
+      });
+    });
   }
 
   function repaint() {
@@ -46,7 +61,7 @@
   function apply(data) {
     if (!data) return false;
     var changed = false;
-    if (swap('Q', data.quotes)) changed = true;
+    if (swap('Q', data.quotes)) { registerThemes(data.quotes); changed = true; }
     if (swap('ESSAYS', data.essays)) changed = true;
     if (swap('LAWS', data.laws)) changed = true;
     if (changed) repaint();

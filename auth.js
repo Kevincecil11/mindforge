@@ -1,20 +1,18 @@
 /*
   MindForge — authentication (Neon Managed Better Auth)
   ----------------------------------------------------
-  Adds an Account block at the top of Settings: email + password, Google,
-  and a signed-in view with sign out.
+  Everything goes through /api/auth/* on our own domain (see
+  api/auth/[...path].js). That proxy hands us the session in an
+  `x-mf-session` header; we keep it in localStorage and send it back on
+  every call. So the session survives even when the browser refuses to
+  keep cookies — which is exactly what iOS Safari does with Neon's domain.
 
-  Two routes to the auth service, because browsers differ:
-
-    /api/auth/*   — same-origin proxy (see api/auth/[...path].js). Cookies
-                    set through here belong to this site, so Safari and iOS
-                    keep them. This is the reliable path.
-    UPSTREAM      — Neon's auth domain, called directly. Needed for the
-                    Google redirect flow, whose session cookie lands on
-                    Neon's domain rather than ours.
-
-  When we check who is signed in we ask BOTH and take whichever answers with
-  a user, so either flow lights up the UI.
+  Flows offered:
+    - Create account / sign in with email + password  (reliable everywhere)
+    - Set or reset a password by email                (links a password to
+      an account that was created with Google)
+    - Continue with Google                            (great on desktop;
+      iOS may drop the session, and we say so plainly)
 */
 (function () {
   'use strict';
@@ -23,60 +21,49 @@
   var UPSTREAM =
     'https://ep-bitter-fog-ae1yr8y3.neonauth.c-2.us-east-2.aws.neon.tech/neondb/auth';
 
-  var TOKEN_KEY = 'mf_auth_token';
+  var SESSION_KEY = 'mf_session';
   var PENDING_KEY = 'mf_auth_pending';
 
-  var state = { user: null, busy: false, mode: 'signin', checked: false };
+  var state = { user: null, busy: false, view: 'signin', checked: false };
 
-  // ---------------------------------------------------------------- helpers
+  // ---------------------------------------------------------------- storage
 
-  function token() {
-    try { return localStorage.getItem(TOKEN_KEY) || null; } catch (e) { return null; }
-  }
-  function setToken(value) {
-    try {
-      if (value) localStorage.setItem(TOKEN_KEY, value);
-      else localStorage.removeItem(TOKEN_KEY);
-    } catch (e) { /* private mode — ignore */ }
-  }
-  function flag(key, value) {
+  function store(key, value) {
     try {
       if (value === undefined) return localStorage.getItem(key);
       if (value === null) localStorage.removeItem(key);
       else localStorage.setItem(key, value);
-    } catch (e) { /* ignore */ }
+    } catch (e) { /* private mode */ }
     return null;
   }
 
-  // One request to one base. Never throws for "no session" — only real errors.
-  function request(base, path, body) {
-    var headers = { 'Content-Type': 'application/json' };
-    var saved = token();
-    if (saved) headers.Authorization = 'Bearer ' + saved;
+  // ---------------------------------------------------------------- network
 
-    return fetch(base + path, {
+  function request(path, body, base) {
+    var headers = { 'Content-Type': 'application/json' };
+    var session = store(SESSION_KEY);
+    if (session) headers['x-mf-session'] = session;
+
+    return fetch((base || PROXY) + path, {
       method: body ? 'POST' : 'GET',
       credentials: 'include',
       headers: headers,
       body: body ? JSON.stringify(body) : undefined
     }).then(function (res) {
-      // Better Auth hands back a session token here when cookies are unavailable.
-      var issued = res.headers.get('set-auth-token');
-      if (issued) setToken(issued);
+      var carried = res.headers.get('x-mf-session');
+      if (carried) store(SESSION_KEY, carried);
 
       return res.text().then(function (text) {
         var data = null;
         try { data = text ? JSON.parse(text) : null; } catch (e) { /* not json */ }
 
         if (!res.ok) {
-          var msg = (data && (data.message || data.error)) ||
-                    ('Request failed (' + res.status + ')');
-          var err = new Error(msg);
+          var err = new Error(
+            (data && (data.message || data.error)) || ('Request failed (' + res.status + ')')
+          );
           err.status = res.status;
           throw err;
         }
-
-        if (data && data.token) setToken(data.token);
         return data;
       });
     });
@@ -86,11 +73,10 @@
     return promise.catch(function () { return null; });
   }
 
-  // Ask both the proxy and Neon directly; first one with a user wins.
   function loadSession() {
     return Promise.all([
-      quiet(request(PROXY, '/get-session')),
-      quiet(request(UPSTREAM, '/get-session'))
+      quiet(request('/get-session')),
+      quiet(request('/get-session', null, UPSTREAM))
     ]).then(function (results) {
       var found = null;
       results.forEach(function (data) {
@@ -102,7 +88,7 @@
     });
   }
 
-  // ------------------------------------------------------------------- view
+  // ------------------------------------------------------------------ styles
 
   function styles() {
     if (document.getElementById('mf-auth-css')) return;
@@ -120,9 +106,11 @@
       '.mf-auth-btn[disabled]{opacity:0.5;cursor:default;}' +
       '.mf-auth-btn.ghost{border-color:var(--border);background:var(--bg);color:var(--ink-mid);}' +
       '.mf-auth-btn.ghost:hover{border-color:var(--accent);color:var(--accent);}' +
-      '.mf-auth-alt{text-align:center;font-size:0.78rem;color:var(--ink-light);padding:4px 0 2px;}' +
+      '.mf-auth-alt{text-align:center;font-size:0.78rem;color:var(--ink-light);padding:4px 0 6px;' +
+        'line-height:1.6;}' +
       '.mf-auth-alt a{color:var(--accent);font-weight:600;text-decoration:none;cursor:pointer;}' +
-      '.mf-auth-msg{font-size:0.74rem;line-height:1.45;margin-top:6px;padding:0 2px;color:var(--ink-light);}' +
+      '.mf-auth-msg{font-size:0.74rem;line-height:1.45;margin-top:6px;padding:0 2px;' +
+        'color:var(--ink-light);}' +
       '.mf-auth-msg.err{color:oklch(65% 0.16 25);}' +
       '.mf-auth-msg.ok{color:var(--accent);}' +
       '.mf-auth-card{display:flex;align-items:center;gap:12px;background:var(--bg);' +
@@ -160,45 +148,97 @@
     box.textContent = text || '';
   }
 
-  function escape(text) {
+  function esc(text) {
     return String(text == null ? '' : text).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
 
-  function render(note, noteKind) {
+  function on(id, handler) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('click', handler);
+  }
+
+  function enterKey(ids, handler) {
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter') handler(); });
+    });
+  }
+
+  function val(id) {
+    var el = document.getElementById(id);
+    return el ? (el.value || '') : '';
+  }
+
+  // -------------------------------------------------------------------- view
+
+  function render(note, kind) {
     var el = section();
     if (!el) return;
 
-    // ---- signed in
+    // ---------- signed in
     if (state.user) {
       var name = state.user.name || state.user.email || 'Signed in';
-      var initial = (name.trim()[0] || '?').toUpperCase();
-
       el.innerHTML =
         '<div class="settings-label">Account</div>' +
         '<div class="mf-auth-card">' +
-          '<div class="mf-auth-dot">' + escape(initial) + '</div>' +
+          '<div class="mf-auth-dot">' + esc((name.trim()[0] || '?').toUpperCase()) + '</div>' +
           '<div>' +
-            '<div class="mf-auth-who">' + escape(name) + '</div>' +
-            '<div class="mf-auth-sub">' + escape(state.user.email || '') + '</div>' +
+            '<div class="mf-auth-who">' + esc(name) + '</div>' +
+            '<div class="mf-auth-sub">' + esc(state.user.email || '') + '</div>' +
           '</div>' +
         '</div>' +
         '<button class="mf-auth-btn ghost" id="mf-signout" style="margin-top:10px;">Sign out</button>' +
-        '<div class="mf-auth-msg ok" id="mf-auth-msg">\u2713 Signed in. This device is linked to your account.</div>';
-
-      document.getElementById('mf-signout').addEventListener('click', signOut);
-      if (note) message(note, noteKind || 'ok');
+        '<div class="mf-auth-msg ok" id="mf-auth-msg">\u2713 Signed in on this device.</div>';
+      on('mf-signout', signOut);
+      if (note) message(note, kind || 'ok');
       return;
     }
 
-    // ---- not signed in
-    var signingUp = state.mode === 'signup';
+    // ---------- set a new password (arrived from a reset email)
+    if (state.view === 'reset') {
+      el.innerHTML =
+        '<div class="settings-label">Set a password</div>' +
+        '<input class="mf-auth-field" id="mf-new" type="password" placeholder="New password" ' +
+          'autocomplete="new-password">' +
+        '<button class="mf-auth-btn" id="mf-save">Save password</button>' +
+        '<div class="mf-auth-alt"><a id="mf-back">Back to sign in</a></div>' +
+        '<div class="mf-auth-msg" id="mf-auth-msg">At least 8 characters.</div>';
+      on('mf-save', savePassword);
+      on('mf-back', function () { state.view = 'signin'; render(); });
+      enterKey(['mf-new'], savePassword);
+      if (note) message(note, kind);
+      return;
+    }
+
+    // ---------- ask for a reset email
+    if (state.view === 'forgot') {
+      el.innerHTML =
+        '<div class="settings-label">Set or reset password</div>' +
+        '<input class="mf-auth-field" id="mf-email" type="email" placeholder="Your email" ' +
+          'autocomplete="email" autocapitalize="none" spellcheck="false">' +
+        '<button class="mf-auth-btn" id="mf-send">Email me a link</button>' +
+        '<div class="mf-auth-alt"><a id="mf-back">Back to sign in</a></div>' +
+        '<div class="mf-auth-msg" id="mf-auth-msg">' +
+          'Signed up with Google? This adds a password to the same account.' +
+        '</div>';
+      on('mf-send', sendReset);
+      on('mf-back', function () { state.view = 'signin'; render(); });
+      enterKey(['mf-email'], sendReset);
+      if (note) message(note, kind);
+      return;
+    }
+
+    // ---------- sign in / create account
+    var signingUp = state.view === 'signup';
 
     el.innerHTML =
       '<div class="settings-label">Account</div>' +
       (signingUp
-        ? '<input class="mf-auth-field" id="mf-name" type="text" placeholder="Your name" autocomplete="name">'
+        ? '<input class="mf-auth-field" id="mf-name" type="text" placeholder="Your name" ' +
+          'autocomplete="name">'
         : '') +
       '<input class="mf-auth-field" id="mf-email" type="email" placeholder="Email" ' +
         'autocomplete="email" autocapitalize="none" spellcheck="false">' +
@@ -210,163 +250,201 @@
       '<div class="mf-auth-alt">' +
         (signingUp
           ? 'Already have an account? <a id="mf-toggle">Sign in</a>'
-          : 'New here? <a id="mf-toggle">Create an account</a>') +
+          : 'New here? <a id="mf-toggle">Create an account</a>' +
+            '<br><a id="mf-forgot">Set or reset password</a>') +
       '</div>' +
       '<button class="mf-auth-btn ghost" id="mf-google">Continue with Google</button>' +
       '<div class="mf-auth-msg" id="mf-auth-msg">' +
         (state.checked ? '' : 'Checking your account\u2026') +
       '</div>';
 
-    document.getElementById('mf-submit').addEventListener('click', submit);
-    document.getElementById('mf-google').addEventListener('click', google);
-    document.getElementById('mf-toggle').addEventListener('click', function () {
-      state.mode = signingUp ? 'signin' : 'signup';
+    on('mf-submit', submit);
+    on('mf-google', google);
+    on('mf-toggle', function () {
+      state.view = signingUp ? 'signin' : 'signup';
       render();
     });
+    on('mf-forgot', function () { state.view = 'forgot'; render(); });
+    enterKey(['mf-email', 'mf-pass', 'mf-name'], submit);
 
-    ['mf-email', 'mf-pass', 'mf-name'].forEach(function (id) {
-      var input = document.getElementById(id);
-      if (!input) return;
-      input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') submit();
-      });
-    });
-
-    if (note) message(note, noteKind || 'err');
+    if (note) message(note, kind || 'err');
   }
 
   // ----------------------------------------------------------------- actions
 
-  function busy(on, label) {
-    state.busy = on;
-    var btn = document.getElementById('mf-submit');
-    var g = document.getElementById('mf-google');
-    if (btn) btn.disabled = on;
-    if (g) g.disabled = on;
-    if (on && label) message(label);
+  function busy(on_, label) {
+    state.busy = on_;
+    ['mf-submit', 'mf-google', 'mf-send', 'mf-save'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.disabled = on_;
+    });
+    if (on_ && label) message(label);
+  }
+
+  function friendly(msg, signingUp) {
+    if (/exist/i.test(msg) && signingUp) {
+      return 'That email already has an account. Use "Set or reset password" to add a password to it.';
+    }
+    if (/credential|password|invalid|unauthor/i.test(msg) && !signingUp) {
+      return 'No password set for that email yet. Tap "Set or reset password" below.';
+    }
+    return msg;
+  }
+
+  function adopt(data) {
+    if (data && data.user) {
+      state.user = data.user;
+      state.checked = true;
+      return true;
+    }
+    return false;
   }
 
   function submit() {
     if (state.busy) return;
 
-    var emailEl = document.getElementById('mf-email');
-    var passEl = document.getElementById('mf-pass');
-    var nameEl = document.getElementById('mf-name');
-    if (!emailEl || !passEl) return;
+    var email = val('mf-email').trim();
+    var password = val('mf-pass');
+    var signingUp = state.view === 'signup';
 
-    var email = (emailEl.value || '').trim();
-    var password = passEl.value || '';
-    var signingUp = state.mode === 'signup';
-
-    if (!email || !password) {
-      message('Enter your email and password.', 'err');
-      return;
-    }
+    if (!email || !password) return message('Enter your email and password.', 'err');
     if (signingUp && password.length < 8) {
-      message('Use at least 8 characters for your password.', 'err');
-      return;
+      return message('Use at least 8 characters for your password.', 'err');
     }
 
     busy(true, signingUp ? 'Creating your account\u2026' : 'Signing you in\u2026');
 
-    var path = signingUp ? '/sign-up/email' : '/sign-in/email';
     var body = signingUp
-      ? {
-          name: (nameEl && nameEl.value.trim()) || email.split('@')[0],
-          email: email,
-          password: password
-        }
+      ? { name: val('mf-name').trim() || email.split('@')[0], email: email, password: password }
       : { email: email, password: password };
 
-    // Through the proxy, so the session cookie is first-party and sticks.
-    request(PROXY, path, body)
+    request(signingUp ? '/sign-up/email' : '/sign-in/email', body)
       .then(function (data) {
-        // Show the signed-in state straight from the response — no waiting.
-        if (data && data.user) {
-          state.user = data.user;
-          state.checked = true;
-          busy(false);
+        busy(false);
+        if (adopt(data)) {
           render();
-          loadSession().then(function () { render(); });
+          quiet(loadSession()).then(function () { render(); });
           return;
         }
         return loadSession().then(function (user) {
-          busy(false);
           if (user) render();
-          else render('Signed in, but no session came back. Reload the page.', 'err');
+          else render('Signed in, but the session did not stick. Reload the page.', 'err');
         });
       })
       .catch(function (err) {
         busy(false);
-        var msg = err.message || 'Something went wrong. Try again.';
-        if (/credential|password|invalid/i.test(msg) && !signingUp) {
-          msg = 'Wrong email or password. If you signed up with Google, use the Google button.';
-        }
-        if (/exist/i.test(msg) && signingUp) {
-          msg = 'That email already has an account. Try signing in instead.';
-        }
-        message(msg, 'err');
+        message(friendly(err.message || 'Something went wrong. Try again.', signingUp), 'err');
+      });
+  }
+
+  function sendReset() {
+    if (state.busy) return;
+    var email = val('mf-email').trim();
+    if (!email) return message('Enter your email.', 'err');
+
+    busy(true, 'Sending\u2026');
+    request('/forget-password', {
+      email: email,
+      redirectTo: window.location.origin + window.location.pathname
+    })
+      .then(function () {
+        busy(false);
+        message('Check your inbox for a link to set your password. It may take a minute.', 'ok');
+      })
+      .catch(function (err) {
+        busy(false);
+        message(err.message || 'Could not send the email. Try again.', 'err');
+      });
+  }
+
+  function savePassword() {
+    if (state.busy) return;
+    var password = val('mf-new');
+    if (password.length < 8) return message('Use at least 8 characters.', 'err');
+
+    busy(true, 'Saving\u2026');
+    request('/reset-password', { newPassword: password, token: state.token })
+      .then(function () {
+        busy(false);
+        state.view = 'signin';
+        clearToken();
+        render('Password saved. Sign in with it now.', 'ok');
+      })
+      .catch(function (err) {
+        busy(false);
+        message(err.message || 'That link may have expired. Request a new one.', 'err');
       });
   }
 
   function google() {
     if (state.busy) return;
     busy(true, 'Opening Google\u2026');
-    flag(PENDING_KEY, 'google');
+    store(PENDING_KEY, 'google');
 
-    // Direct to Neon: the Google redirect has to land back on their domain.
-    request(UPSTREAM, '/sign-in/social', {
+    request('/sign-in/social', {
       provider: 'google',
       callbackURL: window.location.origin + window.location.pathname
-    })
+    }, UPSTREAM)
       .then(function (data) {
-        if (data && data.url) {
-          window.location.href = data.url;
-          return;
-        }
+        if (data && data.url) { window.location.href = data.url; return; }
         busy(false);
-        flag(PENDING_KEY, null);
+        store(PENDING_KEY, null);
         message('Could not start Google sign-in.', 'err');
       })
       .catch(function (err) {
         busy(false);
-        flag(PENDING_KEY, null);
+        store(PENDING_KEY, null);
         message(err.message || 'Could not start Google sign-in.', 'err');
       });
   }
 
   function signOut() {
-    setToken(null);
-    flag(PENDING_KEY, null);
+    store(SESSION_KEY, null);
+    store(PENDING_KEY, null);
     Promise.all([
-      quiet(request(PROXY, '/sign-out', {})),
-      quiet(request(UPSTREAM, '/sign-out', {}))
+      quiet(request('/sign-out', {})),
+      quiet(request('/sign-out', {}, UPSTREAM))
     ]).then(function () {
       state.user = null;
-      state.mode = 'signin';
+      state.view = 'signin';
       render('Signed out.', 'ok');
     });
   }
 
   // -------------------------------------------------------------------- boot
 
+  function findToken() {
+    var match = /[?&#]token=([^&]+)/.exec(window.location.href);
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+
+  function clearToken() {
+    state.token = null;
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, '', window.location.origin + window.location.pathname);
+    }
+  }
+
   function start() {
     styles();
+
+    state.token = findToken();
+    if (state.token) state.view = 'reset';
+
     render();
 
-    var cameBackFromGoogle = flag(PENDING_KEY) === 'google';
+    var fromGoogle = store(PENDING_KEY) === 'google';
 
     loadSession().then(function (user) {
-      if (user) {
-        flag(PENDING_KEY, null);
-        render();
-        return;
-      }
-      if (cameBackFromGoogle) {
-        flag(PENDING_KEY, null);
+      store(PENDING_KEY, null);
+
+      if (user) { state.view = 'signin'; render(); return; }
+      if (state.token) { render(); return; }
+
+      if (fromGoogle) {
         render(
-          'Google signed you in, but this browser blocked the session. ' +
-          'Create an email + password login here \u2014 that one sticks on iPhone.',
+          'Google signed you in but this browser dropped the session. ' +
+          'Tap "Set or reset password" to add a password \u2014 that one sticks on iPhone.',
           'err'
         );
         return;
@@ -381,7 +459,6 @@
     start();
   }
 
-  // Available to other scripts (per-user sync later).
   window.MindForgeAuth = {
     user: function () { return state.user; },
     refresh: function () { return loadSession().then(function (u) { render(); return u; }); }

@@ -1,26 +1,24 @@
 /*
-  MindForge — live content loader
-  -------------------------------
-  Fetches quotes / essays / power laws from the database (via /api/content)
-  and swaps them into the arrays index.html already uses, then re-renders.
+  MindForge — content loader
+  --------------------------
+  Works on both hosts:
 
-  Safe by design:
-  - If the API is unreachable (e.g. on GitHub Pages), nothing breaks:
-    the hardcoded content in index.html stays on screen.
-  - A copy is cached in localStorage, so a second visit renders instantly
-    and still works offline.
-  - Content is only swapped in if the database has AT LEAST as many items
-    as the page already shows, so a half-filled table can never wipe out
-    content that other scripts added.
+    Vercel        -> /api/content exists, so quotes / essays / laws come
+                     live from the Neon database.
+    GitHub Pages  -> no API, so we load quotes-extra.js instead and the
+                     same quotes get added from a plain static file.
+
+  Either way the page ends up with the full library, and nothing breaks if
+  the network is unavailable.
 */
 (function () {
   'use strict';
 
   var API = '/api/content';
   var CACHE_KEY = 'mf_content_v1';
+  var FALLBACK = 'quotes-extra.js';
 
-  // Pretty names for themes that aren't in the original TH map in index.html.
-  var THEME_LABELS = { movies: 'Movies' };
+  var LABELS = { movies: 'Movies' };
 
   function count(name) {
     return (window[name] && window[name].length) || 0;
@@ -34,13 +32,13 @@
     return true;
   }
 
-  // Any theme that shows up on a quote but has no filter chip yet gets one.
+  // Any theme on a quote that has no filter chip yet gets one.
   function registerThemes(quotes) {
     if (typeof TH === 'undefined' || !quotes) return;
     quotes.forEach(function (item) {
       (item.t || []).forEach(function (theme) {
         if (TH[theme]) return;
-        TH[theme] = THEME_LABELS[theme] ||
+        TH[theme] = LABELS[theme] ||
           theme.charAt(0).toUpperCase() + theme.slice(1).replace(/-/g, ' ');
       });
     });
@@ -73,23 +71,36 @@
   }
 
   function writeCache(data) {
-    try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch (e) { /* quota — ignore */ }
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch (e) { /* quota */ }
+  }
+
+  // Static host: pull in the plain-file copy of the extra quotes instead.
+  function useFallback() {
+    if (document.querySelector('script[data-mf-fallback]')) return;
+    var s = document.createElement('script');
+    s.src = FALLBACK;
+    s.setAttribute('data-mf-fallback', '1');
+    document.body.appendChild(s);
   }
 
   function start() {
     // 1. Paint from cache immediately (instant, works offline).
     apply(readCache());
 
-    // 2. Then go get the fresh version from the database.
+    // 2. Then try the database.
     fetch(API, { headers: { accept: 'application/json' } })
-      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (res) {
+        var type = res.headers.get('content-type') || '';
+        if (!res.ok || type.indexOf('json') === -1) return null; // no real API here
+        return res.json();
+      })
       .then(function (data) {
-        if (!data || data.error) return;
+        if (!data || data.error) { useFallback(); return; }
         writeCache(data);
         apply(data);
       })
       .catch(function () {
-        /* offline or no API (GitHub Pages) — keep what is already showing */
+        useFallback();
       });
   }
 

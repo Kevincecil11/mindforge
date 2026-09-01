@@ -102,11 +102,9 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
 
-/* Extra modules: database-backed content (data.js) and login (auth.js). */
+/* Extra quotes (movies, Alexander, Napoleon, Emerson, and more). */
 (function () {
-  ['data.js', 'auth.js'].forEach(function (src) {
-    var s = document.createElement('script');
-    s.src = src;
-    document.body.appendChild(s);
-  });
+  var s = document.createElement('script');
+  s.src = 'quotes-extra.js';
+  document.body.appendChild(s);
 })();

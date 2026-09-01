@@ -102,9 +102,16 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
 
-/* Extra quotes (movies, Alexander, Napoleon, Emerson, and more). */
+/*
+  Extra modules. Each one works out for itself which host it is on:
+    quotes-extra.js — the full quote library as a plain static file
+    data.js         — upgrades to the live database when /api exists
+    auth.js         — shows the Account box only when /api exists
+*/
 (function () {
-  var s = document.createElement('script');
-  s.src = 'quotes-extra.js';
-  document.body.appendChild(s);
+  ['quotes-extra.js', 'data.js', 'auth.js'].forEach(function (src) {
+    var s = document.createElement('script');
+    s.src = src;
+    document.body.appendChild(s);
+  });
 })();
